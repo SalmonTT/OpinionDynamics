@@ -1,9 +1,6 @@
 import random
 import numpy as np
-from plotGraph import *
-from networkAnalysis import *
-
-
+import networkx as nx
 
 def netwrokxBApreferentialAttachment(max_nodes, no_edges):
     G = nx.barabasi_albert_graph(max_nodes, no_edges)
@@ -96,12 +93,10 @@ def preferentialAttachmentART(max_nodes = 100, loner=False, p_multi=2.0):
         node_list = sorted(node for (node, val) in sorted(G.degree, key=lambda x: x[1], reverse=True))
         G.add_node(i)
         # ----- Part 1.2 -----
-        print(i, "loop")
         count = 0
         for j in node_list:
             p = G.degree(j) / (2 * G.number_of_edges())
             p = p + p_multi * (1 - (1/(count+1)))
-            print(p)
             if random.random() <= p:
                 G.add_edge(j, i)
             count += 1
