@@ -118,48 +118,26 @@ def preferentialAttachmentART(max_nodes = 100, loner=False, p_multi=2.0):
     return G
 
 
-def preferentialAttachment_2ndOrder(max_nodes, coef=1, loner=False, max_p=1.0):
-
-    # max_p: specify a maximum number for p
-    # because for first few nodes, this (G.degree(node) / G.number_of_edges()) ratio is very high
-
-    # coef should be [0,1]
-
-    #           degree of node i + C * sum of degrees of i's neighbors
-    # We adopt p = ----------------------------------------------------------
-    #              sum of degrees of all pre-existing nodes + C * sum of degrees^2 of all pre-existing nodes
-    # note that when c = 0, this equation is same as the Barabasi-ALbert model
-    # initialize empty graph
+def preferentialAttachment_2ndOrder(max_nodes, c=1.0, loner=False):
     G = nx.Graph()
-    # initialize first two nodes and edge
     G.add_nodes_from([0, 1])
     G.add_edge(0, 1)
     for i in range(2, max_nodes):
-        # from a list of existing nodes sorted by their degrees (descending order)
-        # get their preference (prob. of forming edge with new node by dividing their degrees by total edges
         existing_node_list = sorted(G.degree, key=lambda x: x[1], reverse=True)
-        # insert new node
         G.add_node(i)
-        print('---Inserted node %d---' % i)
-        # iterate through a list of existing nodes sorted in descending order by number of degree
         for node, degrees in existing_node_list:
             sum_neighbors_degree = 0
             sum_neighbors_degree_squared = 0
             for neighbor in G.neighbors(node):
                 sum_neighbors_degree += G.degree(neighbor)
                 sum_neighbors_degree_squared += pow(G.degree(neighbor), 2)
-            # calculate the prob. (p) that new node (i) will form edge with node (node)
-            p = (G.degree(node) + coef * sum_neighbors_degree) / (
-                        2 * G.number_of_edges() + coef * sum_neighbors_degree_squared)
+            p = (G.degree(node) + c * sum_neighbors_degree) / (
+                        2 * G.number_of_edges() + c * sum_neighbors_degree_squared)
             if random.random() <= p:
                 G.add_edge(node, i)
-                print('edge between %d and %d created' % (node, i))
         if not loner and G.degree(i) == 0:
             rand_node = np.random.randint(0, i - 1)
             G.add_edge(rand_node, i)
-            # print('did not form edge with prev. nodes, will add %d to rand. node %d' % (i, rand_node))
-        # nx.draw(G, with_labels=True)
-        # plt.show()
     return G
 
 def preferentialAttachment_MDA(max_nodes, m0, m):

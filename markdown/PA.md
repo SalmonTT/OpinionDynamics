@@ -55,10 +55,7 @@ for j in node_list:
 Now we loop through the list of existing nodes excluding $node_i$ (node_list) and calculate the probability p that the new $node_i$ will form an edge with the current existing node.
 Probability $p_i$ that new $node_i$ will appending to existing $node_j$ is calculated as follows:
 $$
-\begin{align*}
-p_i = \frac{k_i}{\sum_j k_j}\label{ref1}
-\end{align*}
-\\
+p_i = \frac{k_i}{\sum_j k_j}
 $$
 Once we have calculated the probability, we used the numpy's random.uniform() function to get a random float between [0,1] and compare that with $p_i$. If the random float is smaller than $p_i$, we connect $node_i$ with $node_j$.
 
@@ -178,10 +175,42 @@ This model follows the "Two-level network model" proposed by Dangalchev: https:/
 
 The formula for $p_i$ is as follows:
 $$
-p_i = \frac{degree[node_i] + coef * \sum_jdegree[node_j]}{\sum_ndegree[node_n] + coef*}
+p_i = \frac{degree[node_i] + c * \sum_jdegree[node_j]}{\sum_ndegree[node_n] + 
+c*\sum_ndegree[node_n]^2}
 $$
 
-## preferentialAttachment_2ndOrder()
+when $c = 0$ , this is equivalent to Barabasi-Albert model. note that: 
 
-This model follows "Two-level network model" proposed by Dangalchev. The detail can be found here: https://www.sciencedirect.com/science/article/pii/S0378437104001402
+- $c \in [0,1]$
+- $n$ is the number of existing nodes in the graph
+- $j$ is the number of neighbors of $node_i$
+
+```python
+def preferentialAttachment_2ndOrder(max_nodes, c=1.0, loner=False):
+    G = nx.Graph()
+    G.add_nodes_from([0, 1])
+    G.add_edge(0, 1)
+    for i in range(2, max_nodes):
+        existing_node_list = sorted(G.degree, key=lambda x: x[1], reverse=True)
+        G.add_node(i)
+        for node, degrees in existing_node_list:
+            sum_neighbors_degree = 0
+            sum_neighbors_degree_squared = 0
+            for neighbor in G.neighbors(node):
+                sum_neighbors_degree += G.degree(neighbor)
+                sum_neighbors_degree_squared += pow(G.degree(neighbor), 2)
+            p = (G.degree(node) + c * sum_neighbors_degree) / (
+                        2 * G.number_of_edges() + c * sum_neighbors_degree_squared)
+            if random.random() <= p:
+                G.add_edge(node, i)
+        if not loner and G.degree(i) == 0:
+            rand_node = np.random.randint(0, i - 1)
+            G.add_edge(rand_node, i)
+    return G
+```
+
+Notes:
+
+- The computation of *sum_neighbors_degree* and *sum_neighbors_degree_squared*  because networkx has no other way of calculating these other than looping through every neighbors of a node.
+- Loner behavior can be altered to achieve different outcomes
 
