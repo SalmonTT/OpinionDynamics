@@ -152,14 +152,6 @@ def preferentialAttachment_MDApseudo(max_nodes, m0, m):
             G.add_edge(n, new_node)
     return G
 
-def getInverseHarmonicMean(graph, node):
-    # calculate the IHM of an existing node in a graph
-    sum_inverse_degrees = 0
-    for n in graph.neighbors(node):
-        sum_inverse_degrees += 1 / graph.degree(n)
-    IHM = sum_inverse_degrees / graph.degree(node)
-    return IHM
-
 def preferentialAttachment_MDA(max_nodes, m0, m):
     # https://www.sciencedirect.com/science/article/pii/S0378437116308056?via%3Dihub
     G = preferentialAttachmentV1(m0)
