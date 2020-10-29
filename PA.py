@@ -1,15 +1,6 @@
 import random
 import numpy as np
-from plotGraph import *
-from networkAnalysis import *
-
-def getInverseHarmonicMean(graph, node):
-    # calculate the IHM of an existing node in a graph
-    sum_inverse_degrees = 0
-    for n in graph.neighbors(node):
-        sum_inverse_degrees += 1 / graph.degree(n)
-    IHM = sum_inverse_degrees / graph.degree(node)
-    return IHM
+import networkx as nx
 
 def netwrokxBApreferentialAttachment(max_nodes, no_edges):
     G = nx.barabasi_albert_graph(max_nodes, no_edges)
@@ -102,12 +93,10 @@ def preferentialAttachmentART(max_nodes = 100, loner=False, p_multi=2.0):
         node_list = sorted(node for (node, val) in sorted(G.degree, key=lambda x: x[1], reverse=True))
         G.add_node(i)
         # ----- Part 1.2 -----
-        print(i, "loop")
         count = 0
         for j in node_list:
             p = G.degree(j) / (2 * G.number_of_edges())
             p = p + p_multi * (1 - (1/(count+1)))
-            print(p)
             if random.random() <= p:
                 G.add_edge(j, i)
             count += 1
@@ -140,44 +129,41 @@ def preferentialAttachment_2ndOrder(max_nodes, c=1.0, loner=False):
             G.add_edge(rand_node, i)
     return G
 
-def preferentialAttachment_MDA(max_nodes, m0, m):
-    # uncertainty: what if the mediator doesn't have m neighbors?
-    # - current behavior: if total neighbors < m, use total neighbors
-
-    # initialize a graph with m0 nodes connected in an arbitrary fashion
+def preferentialAttachment_MDApseudo(max_nodes, m0, m):
     G = preferentialAttachmentV2(m0, 100)
     for new_node in range(m0 + 1, max_nodes):
-        # first obtain a list of connected nodes in the existing graph
         connected_nodes_list = []
         for n in G.degree:
             if n[1] != 0: connected_nodes_list.append(n[0])
-        # insert new node
         G.add_node(new_node)
-        print('---Inserted node %d---' % new_node)
-        # picking a random node from list of connected nodes as mediator
-        # for n in connected_nodes_list:
-        #     N = len(list(G.neighbors(n)))
-        #     p = (G.degree(n) / N) * getInverseHarmonicMean(G, n)
         mediator = random.choice(connected_nodes_list)
-        print("this is the randomly chosen connected node: %d" % mediator)
-
-        # pick m of mediator's neighbors with uniform probability
         all_neighbors_list = list(G.neighbors(mediator))
-        print("this is the list of all of mediator's neighbors: ", all_neighbors_list)
         m_neighbors_list = []
-        # randomly select min(m, total_num_of_neighbors) nodes without replacement
         for n in range(min(m, G.degree(mediator))):
             neighbor = random.choice(all_neighbors_list)
             all_neighbors_list.remove(neighbor)
             m_neighbors_list.append(neighbor)
-        print("this is list of m randomly selected neighbors of mediator: ", m_neighbors_list)
-        # connect the new node with the nodes in m_neighbors_list
         for n in m_neighbors_list:
             G.add_edge(n, new_node)
-            print('edge between %d and %d created' % (n, new_node))
-        # nx.draw(G, with_labels=True)
-        # plt.show()
     return G
 
+def preferentialAttachment_MDA(max_nodes, m0, m):
+    # https://www.sciencedirect.com/science/article/pii/S0378437116308056?via%3Dihub
+    G = preferentialAttachmentV1(m0)
+    for new_node in range(m0 + 1, max_nodes):
+        connected_nodes_list = []
+        for n in G.degree:
+            if n[1] != 0: connected_nodes_list.append(n[0])
+        G.add_node(new_node)
+        m_count = 0
+        for n in connected_nodes_list:
+            if m_count >= m: break
+            N = len(G)
+            sum_inverse_degree = sum([1/x for x in G.neighbors(n)])
+            p = (1 / N) * sum_inverse_degree
+            if random.random() <= p:
+                G.add_edge(new_node, n)
+                m += 1
+    return G
 
 
