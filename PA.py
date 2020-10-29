@@ -13,9 +13,7 @@ def getInverseHarmonicMean(graph, node):
 
 def netwrokxBApreferentialAttachment(max_nodes, no_edges):
     G = nx.barabasi_albert_graph(max_nodes, no_edges)
-    plotGraph(G)
-    degreeDistribution(G)
-    return (G)
+    return G
 
 
 def preferentialAttachmentV1(max_nodes, loner=False):
@@ -45,10 +43,7 @@ def preferentialAttachmentV1(max_nodes, loner=False):
                         p = G.degree(j) / (2 * G.number_of_edges())
                     if (round(np.random.uniform(0, 1), 1) < p):
                         G.add_edge(j, i)
-    plotGraph(G)
-    degreeHistogram(G)
-    degreeDistribution(G)
-    return (G)
+    return G
 
 
 def preferentialAttachmentV2(max_nodes, loner=False, max_p=1.0):
@@ -72,8 +67,7 @@ def preferentialAttachmentV2(max_nodes, loner=False, max_p=1.0):
         if not loner & (G.degree(i) == 0):
             rand_node = node_list[random.choice(node_list)]
             G.add_edge(rand_node, i)
-    plotGraph(G)
-    return(G)
+    return G
 
 def preferentialAttachmentV3(max_nodes, loner=False):
     G = nx.Graph()
@@ -96,8 +90,7 @@ def preferentialAttachmentV3(max_nodes, loner=False):
         if not loner & (G.degree(i) == 0):
             rand_node = node_list[random.choice(node_list)]
             G.add_edge(rand_node, i)
-    plotGraph(G)
-    return(G)
+    return G
 
 def preferentialAttachmentART(max_nodes = 100, loner=False, p_multi=2.0):
     G = nx.Graph()
@@ -122,8 +115,7 @@ def preferentialAttachmentART(max_nodes = 100, loner=False, p_multi=2.0):
         if not loner & (G.degree(i) == 0):
             rand_node = node_list[random.choice(node_list)]
             G.add_edge(rand_node, i)
-    plotGraph(G)
-    return(G)
+    return G
 
 
 def preferentialAttachment_2ndOrder(max_nodes, coef=1, loner=False, max_p=1.0):
@@ -168,9 +160,7 @@ def preferentialAttachment_2ndOrder(max_nodes, coef=1, loner=False, max_p=1.0):
             # print('did not form edge with prev. nodes, will add %d to rand. node %d' % (i, rand_node))
         # nx.draw(G, with_labels=True)
         # plt.show()
-    plotGraph(G)
-    return []
-
+    return G
 
 def preferentialAttachment_MDA(max_nodes, m0, m):
     # uncertainty: what if the mediator doesn't have m neighbors?
@@ -209,13 +199,7 @@ def preferentialAttachment_MDA(max_nodes, m0, m):
             print('edge between %d and %d created' % (n, new_node))
         # nx.draw(G, with_labels=True)
         # plt.show()
+    return G
 
-    plotGraph(G)
-    return []
 
-def plotPAgraph():
-    # preferentialAttachment_2ndOrder(100, loner=False)
-    netwrokxBApreferentialAttachment(100, 5)
-    # preferentialAttachmentV1(100, loner=False)
-    return
 
