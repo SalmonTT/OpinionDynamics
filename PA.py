@@ -150,20 +150,20 @@ def preferentialAttachment_MDApseudo(max_nodes, m0, m):
 def preferentialAttachment_MDA(max_nodes, m0, m):
     # https://www.sciencedirect.com/science/article/pii/S0378437116308056?via%3Dihub
     G = preferentialAttachmentV1(m0)
+    connected_nodes_list = []
     for new_node in range(m0 + 1, max_nodes):
-        connected_nodes_list = []
-        for n in G.degree:
-            if n[1] != 0: connected_nodes_list.append(n[0])
+        if new_node == m0+1:
+            connected_nodes_list = list(G)
         G.add_node(new_node)
         m_count = 0
-        for n in connected_nodes_list:
-            if m_count >= m: break
+        while m_count < m:
             N = len(G)
-            sum_inverse_degree = sum([1/x for x in G.neighbors(n)])
+            sum_inverse_degree = sum([1/G.degree[x] for x in G.neighbors(connected_nodes_list[m_count])])
             p = (1 / N) * sum_inverse_degree
             if random.random() <= p:
-                G.add_edge(new_node, n)
+                G.add_edge(new_node, connected_nodes_list[m_count])
                 m += 1
+        connected_nodes_list.append(new_node)
     return G
 
 
