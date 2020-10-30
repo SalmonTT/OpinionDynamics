@@ -14,7 +14,7 @@ def getInverseHarmonicMean(graph, node):
 def netwrokxBApreferentialAttachment(max_nodes, no_edges):
     G = nx.barabasi_albert_graph(max_nodes, no_edges)
     plotGraph(G)
-    degreeDistribution(G)
+    networkAnalysis(G)
     return (G)
 
 
@@ -46,8 +46,7 @@ def preferentialAttachmentV1(max_nodes, loner=False):
                     if (round(np.random.uniform(0, 1), 1) < p):
                         G.add_edge(j, i)
     plotGraph(G)
-    degreeHistogram(G)
-    degreeDistribution(G)
+    networkAnalysis(G)
     return (G)
 
 
@@ -72,6 +71,7 @@ def preferentialAttachmentV2(max_nodes, loner=False, max_p=1.0):
         if not loner & (G.degree(i) == 0):
             rand_node = node_list[random.choice(node_list)]
             G.add_edge(rand_node, i)
+    networkAnalysis(G)
     plotGraph(G)
     return(G)
 
@@ -96,6 +96,7 @@ def preferentialAttachmentV3(max_nodes, loner=False):
         if not loner & (G.degree(i) == 0):
             rand_node = node_list[random.choice(node_list)]
             G.add_edge(rand_node, i)
+    networkAnalysis(G)
     plotGraph(G)
     return(G)
 
@@ -122,6 +123,7 @@ def preferentialAttachmentART(max_nodes = 100, loner=False, p_multi=2.0):
         if not loner & (G.degree(i) == 0):
             rand_node = node_list[random.choice(node_list)]
             G.add_edge(rand_node, i)
+    networkAnalysis(G)
     plotGraph(G)
     return(G)
 
@@ -168,6 +170,7 @@ def preferentialAttachment_2ndOrder(max_nodes, coef=1, loner=False, max_p=1.0):
             # print('did not form edge with prev. nodes, will add %d to rand. node %d' % (i, rand_node))
         # nx.draw(G, with_labels=True)
         # plt.show()
+    networkAnalysis(G)
     plotGraph(G)
     return []
 
@@ -209,13 +212,49 @@ def preferentialAttachment_MDA(max_nodes, m0, m):
             print('edge between %d and %d created' % (n, new_node))
         # nx.draw(G, with_labels=True)
         # plt.show()
-
+    networkAnalysis(G)
     plotGraph(G)
     return []
+
+def nonLinear(no_node, no_edge):
+    # We can consider the probability of a new node (n+1) connected to a existing node u is
+    # f(degree of m at time t)/n
+    # If f(k) = b, there is no preferential attachment. (Constant case β=0)
+    # If f(k) = ak + b, is the linear preferential attachment. (Linear caseβ=1)
+    # To build a non-linear, we have f(k) = k^β
+    # Sublinear case 0 < β < 1.
+    # Superlinear case β > 1.
+    pass
+
+def randomSubset(repeated_nodes, no_edge):
+    targets = set()
+    while len(targets) < no_edge:
+        x = random.choice(repeated_nodes)
+        targets.add(x)
+    return targets
+
+def barabasiAlbertGraph(no_node, max_no_edge, seed=None):
+    G = nx.empty_graph(2)
+    targets = list(range(2))
+    repeated_nodes = []
+    source = 2
+    no_edge = random.randint(1,2)
+    while source < no_node :
+        G.add_edges_from(zip([source]*no_edge, targets))
+        repeated_nodes.extend(targets)
+        repeated_nodes.extend([source]*no_edge)
+        no_edge = random.randint(1, min(max_no_edge, nx.number_of_nodes(G)))
+        targets = randomSubset(repeated_nodes, no_edge)
+        source += 1
+    networkAnalysis(G)
+    plotGraph(G)
+    return G
 
 def plotPAgraph():
     # preferentialAttachment_2ndOrder(100, loner=False)
     netwrokxBApreferentialAttachment(100, 5)
     # preferentialAttachmentV1(100, loner=False)
     return
+
+barabasiAlbertGraph(100, 5)
 
