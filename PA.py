@@ -9,14 +9,16 @@ def netwrokxBApreferentialAttachment(max_nodes, no_edges):
 
 def preferentialAttachmentV1(max_nodes, loner=False):
     G = nx.Graph()
-    G.add_nodes_from([0, 1])
+    G.add_node(0, opinion=-1)
+    G.add_node(1, opinion=1)
     G.add_edge(0, 1)
     p = 0.5
     # ----- Part 1 -----
     for i in range(2, max_nodes):
         # ----- Part 1.1 -----
         node_list = sorted(node for (node, val) in sorted(G.degree, key=lambda x: x[1], reverse=True))
-        G.add_node(i)
+        init_opinion = random.choice([-1, 1])
+        G.add_node(i, opinion=init_opinion)
         # ----- Part 1.2 -----
         for j in node_list:
             if G.number_of_edges() != 0:
