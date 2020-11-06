@@ -88,7 +88,9 @@ def clusteringCoefficient(G):
     ave_clust = nx.average_clustering(G)
     print("Average clustering coefficient of the graph: %d" % ave_clust)
 
-
-# degreeHistogram(nx.gnp_random_graph(100, 0.02))
-# basicInfo(nx.gnp_random_graph(100, 0.02))
-# clusteringCoefficient(nx.gnp_random_graph(100, 0.02))
+def fullAnalysis(G):
+    basicInfo(G)
+    degreeHistogram(G)
+    degreeDistribution(G)
+    clusteringCoefficient(G)
+    return
