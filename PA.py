@@ -1,6 +1,7 @@
 import random
 import numpy as np
 import networkx as nx
+from plotGraph import *
 
 def netwrokxBApreferentialAttachment(max_nodes, no_edges):
     G = nx.barabasi_albert_graph(max_nodes, no_edges)
@@ -40,8 +41,8 @@ def preferentialAttachmentV1(max_nodes, loner=False):
                     if (round(np.random.uniform(0, 1), 1) < p):
                         G.add_edge(j, i)
 
-    plotGraph(G)
-    networkAnalysis(G)
+    # plotGraph(G)
+    # networkAnalysis(G)
     return (G)
 
 
@@ -210,8 +211,15 @@ def barabasiAlbertGraph(no_node, max_no_edge, seed=None):
         no_edge = random.randint(1, min(max_no_edge, nx.number_of_nodes(G)))
         targets = randomSubset(repeated_nodes, no_edge)
         source += 1
-    networkAnalysis(G)
-    plotGraph(G)
+    # networkAnalysis(G)
+    # plotGraph(G)
+    return G
+
+# Add attributes to nodes in G
+def addFeature(G):
+    for node in G:
+        init_opinion = random.choice([-1, 1])
+        G.nodes[node]['opinion']=init_opinion
     return G
 
 def plotPAgraph():
