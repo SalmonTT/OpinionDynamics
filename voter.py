@@ -3,6 +3,7 @@
 from PA import *
 from pyvis.network import Network
 from scipy.stats import poisson
+from numpy import random
 
 def interactiveGraphWithOpinion(G):
     # plot interactive graph using pyvis, with degree, no of node labeled, size depends on nodes' degree
@@ -71,7 +72,37 @@ def voterV1(max_nodes, num_updates):
 # The number of nodes with opinion 1 is 1. The number of nodes with opinion -1 is 99.
 
 
-voterV1(100, 50)
+
+def voterPiper(max_nodes, max_no_edge, poisson_lambda, process_time):
+    G = barabasiAlbertGraph(max_nodes, max_no_edge)
+    addFeature(G)
+    currentOpinion(G)
+
+    events = dict.fromkeys(range(1, process_time+1))
+    for node in G:
+        # event_occur = poissonGenerator(poisson_lambda, process_time)
+        current_time = random.poisson(poisson_lambda)
+        while current_time <= process_time:
+            if events[current_time] is None:
+                events[current_time] = [node]
+            else:
+                events[current_time].append(node)
+            current_time = current_time + random.poisson(poisson_lambda)
+
+    for time_t in events.keys():
+        # print("At time %d" % time_t)
+        if events[time_t] is None:
+            continue
+        for node in events[time_t]:
+            G.nodes[node]['opinion'] = G.nodes[random.choice([n for n in G.neighbors(node)])]['opinion']
+        #     print("Node %d changed its opinion" % node)
+        # print("==================================")
+
+    currentOpinion(G)
+    return
+
+voterPiper(100, 50, 10, 200)
+
 
 # G = barabasiAlbertGraph(100,50)
 # addFeature(G)
