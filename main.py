@@ -17,6 +17,7 @@ def analysis(G):
     interactiveGraphExtended(network)
     return
 
+
 if __name__ == '__main__':
     network = plotNetwork()
     analysis(network)
