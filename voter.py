@@ -4,26 +4,38 @@ from PA import *
 from pyvis.network import Network
 from scipy.stats import poisson
 from numpy import random
+import math
+import collections
+
 
 def interactiveGraphWithOpinion(G):
     # plot interactive graph using pyvis, with degree, no of node labeled, size depends on nodes' degree
     nt = Network(height="750px", width="100%", bgcolor="#222222", font_color="white")
     nt.barnes_hut(spring_strength=0.006)
     for node in G:
-        nt.add_node(node, label=G.degree(node), title="node "+str(node)+' '+str(G.nodes[node]['opinion']), value=G.degree(node))
+        nt.add_node(node, label=G.degree(node), title="node " + str(node) + ' ' + str(G.nodes[node]['opinion']),
+                    value=G.degree(node))
 
     for edge in G.edges:
         nt.add_edge(int(edge[0]), int(edge[1]), color='white')
     nt.show("nx.html")
 
+
 def currentOpinion(G):
+    count_pos = getPosOpinion(G)
+    count_neg = nx.number_of_nodes(G) - count_pos
+    print("The number of nodes with opinion 1 is %d. The number of nodes with opinion -1 is %d. " % (
+    count_pos, count_neg))
+
+
+def getPosOpinion(G):
     opin = nx.get_node_attributes(G, 'opinion')
-    count_pos=0
-    for k,v in opin.items():
-        if v==1 :
-            count_pos=count_pos+1
-    count_neg=nx.number_of_nodes(G)-count_pos
-    print("The number of nodes with opinion 1 is %d. The number of nodes with opinion -1 is %d. " %(count_pos, count_neg))
+    count_pos = 0
+    for k, v in opin.items():
+        if v == 1:
+            count_pos = count_pos + 1
+    return count_pos
+
 
 def voterV1(max_nodes, num_updates):
     # step one: create a social network
@@ -49,60 +61,43 @@ def voterV1(max_nodes, num_updates):
     currentOpinion(graph)
     return
 
-# Test1 100,50 preferentialAttachmentV1
-# The number of nodes with opinion 1 is 39. The number of nodes with opinion -1 is 61.
-# The number of nodes with opinion 1 is 74. The number of nodes with opinion -1 is 26.
-# Test2
-# The number of nodes with opinion 1 is 45. The number of nodes with opinion -1 is 55.
-# The number of nodes with opinion 1 is 100. The number of nodes with opinion -1 is 0.
-# Test3
-# The number of nodes with opinion 1 is 55. The number of nodes with opinion -1 is 45.
-# The number of nodes with opinion 1 is 100. The number of nodes with opinion -1 is 0.
-# Test1 100,50 barabasiAlbertGraph
-# The number of nodes with opinion 1 is 44. The number of nodes with opinion -1 is 56.
-# The number of nodes with opinion 1 is 15. The number of nodes with opinion -1 is 85.
-# Test2
-# The number of nodes with opinion 1 is 51. The number of nodes with opinion -1 is 49.
-# The number of nodes with opinion 1 is 96. The number of nodes with opinion -1 is 4.
-# Test3
-# The number of nodes with opinion 1 is 48. The number of nodes with opinion -1 is 52.
-# The number of nodes with opinion 1 is 64. The number of nodes with opinion -1 is 36.
-# Test4
-# The number of nodes with opinion 1 is 57. The number of nodes with opinion -1 is 43.
-# The number of nodes with opinion 1 is 1. The number of nodes with opinion -1 is 99.
-
-
 
 def voterPiper(max_nodes, max_no_edge, poisson_lambda, process_time):
     G = barabasiAlbertGraph(max_nodes, max_no_edge)
     addFeature(G)
     currentOpinion(G)
-
-    events = dict.fromkeys(range(1, process_time+1))
+    events = {}
     for node in G:
-        # event_occur = poissonGenerator(poisson_lambda, process_time)
-        current_time = random.poisson(poisson_lambda)
-        while current_time <= process_time:
-            if events[current_time] is None:
-                events[current_time] = [node]
+        n = random.random()
+        inter_event_time = -math.log(1.0 - n) / poisson_lambda
+        event_time = inter_event_time
+        while event_time <= process_time:
+            if event_time in events:
+                events[event_time].append(node)
             else:
-                events[current_time].append(node)
-            current_time = current_time + random.poisson(poisson_lambda)
+                events[event_time] = [node]
+            n = random.random()
+            inter_event_time = -math.log(1.0 - n) / poisson_lambda
+            event_time = event_time + inter_event_time
 
-    for time_t in events.keys():
-        # print("At time %d" % time_t)
-        if events[time_t] is None:
-            continue
-        for node in events[time_t]:
+    sorted_events = collections.OrderedDict(sorted(events.items()))
+    no_ite = 0
+    for time_t in sorted_events.keys():
+        for node in sorted_events[time_t]:
+            no_ite += 1
             G.nodes[node]['opinion'] = G.nodes[random.choice([n for n in G.neighbors(node)])]['opinion']
-        #     print("Node %d changed its opinion" % node)
-        # print("==================================")
+            print("At time %f, Node %d changed its opinion to %d. There are still %d has pos opinion" %
+                  (time_t, node, G.nodes[node]['opinion'], getPosOpinion(G)))
+            if getPosOpinion(G) == 0 or getPosOpinion(G) == max_nodes:
+                print("At %f, after %d iterations, network reaches consensus" % (time_t, no_ite))
+                currentOpinion(G)
+                return
 
     currentOpinion(G)
     return
 
-voterPiper(100, 50, 10, 200)
 
+voterPiper(100, 50, 10, 10)
 
 # G = barabasiAlbertGraph(100,50)
 # addFeature(G)
