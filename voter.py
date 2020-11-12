@@ -65,41 +65,67 @@ def badVoter(max_nodes, num_updates):
     getCurrentOpinion(graph)
     return
 
-def voterModel(max_nodes, max_edges, lamb, discrete_process_time):
+def voterModel1(max_nodes, max_edges, lamb, discrete_process_time):
     G = barabasiAlbertGraph(max_nodes, max_edges)
     addFeature(G)
     getCurrentOpinion(G)
     schedular = pd.DataFrame()
     for node in G:
-        inter_arrival_times = []
         arrival_times = []
         time_lapsed = 0
         while time_lapsed <= discrete_process_time:
             p = random.uniform(0,1)
             inter_arrival_time = - math.log(1.0 - p) / lamb
-            inter_arrival_times.append(inter_arrival_time)
             time_lapsed += inter_arrival_time
             if time_lapsed < discrete_process_time:
                 arrival_times.append(time_lapsed)
-        discrete_arrival_times = [int(x)+1 for x in arrival_times]
-        # since discrete_arrival_times is of variable length due the fact that some agents updates multiple
-        # times during unit time (iteration), we map discrete_arrival_times to a fixed list of length
-        # discrete_process_time, where the index of the list represents the unit time (iteration) and the values
-        # represents the number of updates for that agent
-        arrival_schedule = []
-        for i in range(discrete_process_time):
-            arrival_schedule.append(discrete_arrival_times.count(i))
-        schedular[node] = arrival_schedule
-
-    pd.set_option('display.max_rows', None)
-    pd.set_option('display.max_columns', None)
-    print(schedular)
     # -- update opinions --
     for time in schedular.index.values:
         update_list = schedular.iloc[time].tolist()
         for node in update_list:
             G.nodes[node]['opinion'] = G.nodes[random.choice([n for n in G.neighbors(node)])]['opinion']
             # getCurrentOpinion(G)
+    getCurrentOpinion(G)
+    return
+
+def voterModel(max_nodes, max_edges, lamb, num_updates, process_time):
+    # num_updates is the total number of updates that will occur
+    # process_time is the length of the poisson process for each agent/node
+    G = barabasiAlbertGraph(max_nodes, max_edges)
+    addFeature(G)
+    getCurrentOpinion(G)
+    # key = update time, value = update node
+    schedule = {}
+    for node in G:
+        # arrival_time is the arrival time for ith update
+        arrival_time = 0
+        while(True):
+            p = random.uniform(0, 1)
+            inter_arrival_time = - math.log(1.0 - p) / lamb
+            arrival_time += inter_arrival_time
+            if arrival_time <= process_time:
+                if arrival_time in schedule:
+                    schedule[arrival_time].append(node)
+                else:
+                    schedule[arrival_time] = [node]
+            else: break
+
+    sorted_schedule = collections.OrderedDict(sorted(schedule.items()))
+    print(sorted_schedule)
+    update_count = 0
+    for update in sorted_schedule.keys():
+        for node in sorted_schedule[update]:
+            G.nodes[node]['opinion'] = G.nodes[random.choice([n for n in G.neighbors(node)])]['opinion']
+            # print("At time %f, Node %d changed its opinion to %d. There are %d has pos opinion" %
+            #       (time_t, node, G.nodes[node]['opinion'], getPosOpinion(G)))
+            if getPosOpinion(G) == 0 or getPosOpinion(G) == max_nodes:
+                # print("At %f, after %d iterations, network reaches consensus" % (time_t, no_ite))
+                getCurrentOpinion(G)
+            update_count+=1
+            if update_count >= num_updates:
+                getCurrentOpinion(G)
+                return
+
     getCurrentOpinion(G)
     return
 
@@ -139,8 +165,5 @@ def voterPiper(max_nodes, max_no_edge, poisson_lambda, discrete_process_time):
     return
 
 
-voterPiper(100, 50, 1, 50)
+voterModel(100, 50, 1, 6000, 50)
 
-# G = barabasiAlbertGraph(100,50)
-# addFeature(G)
-# interactiveGraphWithOpinion(G)
