@@ -2,12 +2,13 @@ import random
 import numpy as np
 import networkx as nx
 from plotGraph import *
+from networkAnalysis import networkAnalysis
 
 def netwrokxBApreferentialAttachment(max_nodes, no_edges):
     G = nx.barabasi_albert_graph(max_nodes, no_edges)
     plotGraph(G)
     networkAnalysis(G)
-    return (G)
+    return G
 
 
 
@@ -43,7 +44,7 @@ def preferentialAttachmentV1(max_nodes, loner=False):
 
     # plotGraph(G)
     # networkAnalysis(G)
-    return (G)
+    return G
 
 
 
@@ -69,9 +70,9 @@ def preferentialAttachmentV2(max_nodes, loner=False, max_p=1.0):
             rand_node = node_list[random.choice(node_list)]
             G.add_edge(rand_node, i)
 
-    networkAnalysis(G)
-    plotGraph(G)
-    return(G)
+    # networkAnalysis(G)
+    # plotGraph(G)
+    return G
 
 def preferentialAttachmentV3(max_nodes, loner=False):
     G = nx.Graph()
@@ -95,9 +96,9 @@ def preferentialAttachmentV3(max_nodes, loner=False):
             rand_node = node_list[random.choice(node_list)]
             G.add_edge(rand_node, i)
 
-    networkAnalysis(G)
-    plotGraph(G)
-    return(G)
+    # networkAnalysis(G)
+    # plotGraph(G)
+    return G
 
 
 def preferentialAttachmentART(max_nodes = 100, loner=False, p_multi=2.0):
@@ -122,9 +123,9 @@ def preferentialAttachmentART(max_nodes = 100, loner=False, p_multi=2.0):
             rand_node = node_list[random.choice(node_list)]
             G.add_edge(rand_node, i)
 
-    networkAnalysis(G)
-    plotGraph(G)
-    return(G)
+    # networkAnalysis(G)
+    # plotGraph(G)
+    return G
 
 
 
@@ -152,9 +153,9 @@ def preferentialAttachment_2ndOrder(max_nodes, c=1.0, loner=False):
             # print('did not form edge with prev. nodes, will add %d to rand. node %d' % (i, rand_node))
         # nx.draw(G, with_labels=True)
         # plt.show()
-    networkAnalysis(G)
-    plotGraph(G)
-    return []
+    # networkAnalysis(G)
+    # plotGraph(G)
+    return G
 
 
 
@@ -177,9 +178,9 @@ def preferentialAttachment_MDApseudo(max_nodes, m0, m):
             print('edge between %d and %d created' % (n, new_node))
         # nx.draw(G, with_labels=True)
         # plt.show()
-    networkAnalysis(G)
-    plotGraph(G)
-    return []
+    # networkAnalysis(G)
+    # plotGraph(G)
+    return G
 
 def nonLinear(no_node, no_edge):
     # We can consider the probability of a new node (n+1) connected to a existing node u is
@@ -248,6 +249,4 @@ def preferentialAttachment_MDA(max_nodes, m0, m):
         connected_nodes_list.append(new_node)
     return G
 
-
-barabasiAlbertGraph(100, 5)
 

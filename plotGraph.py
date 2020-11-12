@@ -12,8 +12,6 @@ def plotGraph(G):
     # interactiveGraph(G)
     # interactiveGraphExtended(G)
 
-
-
 def plotGraphWithDegree(G):
     # polt netwrok with nodes' degree labeled
     degree_labels = {}
