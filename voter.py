@@ -3,11 +3,23 @@
 from PA import *
 from pyvis.network import Network
 from scipy.stats import poisson
-from numpy import random
+import numpy as np
 import math
 import collections
 import pandas as pd
 
+
+# Add attributes to nodes in G
+def addFeature(G, num):
+    stubborn_agents = random.sample(list(G), num)
+    for node in G:
+        init_opinion = np.random.choice([-1, 1])
+        G.nodes[node]['opinion']=init_opinion
+        if node in stubborn_agents:
+            G.nodes[node]['stubborness'] = 1
+        else:
+            G.nodes[node]['stubborness'] = 0
+    return G
 
 def interactiveGraphWithOpinion(G):
     # plot interactive graph using pyvis, with degree, no of node labeled, size depends on nodes' degree
@@ -37,62 +49,53 @@ def getPosOpinion(G):
     return count_pos
 
 
-def discretizeList(list):
-    discrete_list = [int(x) for x in list]
-    return discrete_list
-
-def badVoter(max_nodes, num_updates):
-    # step one: create a social network
-    # graph = preferentialAttachmentV1(max_nodes)
-    graph = barabasiAlbertGraph(100, 50)
-    addFeature(graph)
-    getCurrentOpinion(graph)
-    # step three: iterate through n number of updates
-    for k in range(num_updates):
-        # for each update k, update j number of nodes opinions via Poisson process with lamba=1 following voter algorithm
-        # get a list of nodes that needs to be updated:
-        # print(str(k) + " round" + " node 5 opinion: "+str(graph.nodes[5]['opinion']))
-        p = poisson.pmf(1, 1)
-        update_nodes = []
-        all_nodes = list(range(max_nodes))
-        for node in all_nodes:
-            if np.random.uniform(0, 1) < p:
-                update_nodes.append(node)
-        for node in update_nodes:
-            graph.nodes[node]['opinion'] = graph.nodes[random.choice([n for n in graph.neighbors(node)])]['opinion']
-
-    # interactiveGraphWithOpinion(graph)
-    getCurrentOpinion(graph)
-    return
-
-def voterModel1(max_nodes, max_edges, lamb, discrete_process_time):
+def voterModelStubborn(max_nodes, max_edges, num_updates, process_time, num_stubborn):
+    # Stubborn agents are individuals are thought to be continuously influencing their
+    # neighbors via original voter model update rules, but never update their decisions (opinions)
+    # Note that while the paper uses a directed graph, we will use an undirected graph here
     G = barabasiAlbertGraph(max_nodes, max_edges)
-    addFeature(G)
+    addFeature(G, num_stubborn)
     getCurrentOpinion(G)
-    schedular = pd.DataFrame()
+    schedule = {}
     for node in G:
-        arrival_times = []
-        time_lapsed = 0
-        while time_lapsed <= discrete_process_time:
-            p = random.uniform(0,1)
-            inter_arrival_time = - math.log(1.0 - p) / lamb
-            time_lapsed += inter_arrival_time
-            if time_lapsed < discrete_process_time:
-                arrival_times.append(time_lapsed)
-    # -- update opinions --
-    for time in schedular.index.values:
-        update_list = schedular.iloc[time].tolist()
-        for node in update_list:
-            G.nodes[node]['opinion'] = G.nodes[random.choice([n for n in G.neighbors(node)])]['opinion']
-            # getCurrentOpinion(G)
+        arrival_time = 0
+        while (True):
+            p = np.random.uniform(0, 1)
+            inter_arrival_time = - math.log(1.0 - p)
+            arrival_time += inter_arrival_time
+            if arrival_time <= process_time:
+                if arrival_time in schedule:
+                    schedule[arrival_time].append(node)
+                else:
+                    schedule[arrival_time] = [node]
+            else:
+                break
+
+    sorted_schedule = collections.OrderedDict(sorted(schedule.items()))
+    print(sorted_schedule)
+    update_count = 0
+    for update in sorted_schedule.keys():
+        for node in sorted_schedule[update]:
+            if G.nodes[node]['stubborness'] != 1:
+                G.nodes[node]['opinion'] = G.nodes[np.random.choice([n for n in G.neighbors(node)])]['opinion']
+            # print("At time %f, Node %d changed its opinion to %d. There are %d has pos opinion" %
+            #       (time_t, node, G.nodes[node]['opinion'], getPosOpinion(G)))
+            if getPosOpinion(G) == 0 or getPosOpinion(G) == max_nodes:
+                # print("At %f, after %d iterations, network reaches consensus" % (time_t, no_ite))
+                getCurrentOpinion(G)
+            update_count += 1
+            if update_count >= num_updates:
+                getCurrentOpinion(G)
+                return
+
     getCurrentOpinion(G)
     return
 
-def voterModel(max_nodes, max_edges, lamb, num_updates, process_time):
+def voterModel(max_nodes, max_edges, num_updates, process_time):
     # num_updates is the total number of updates that will occur
     # process_time is the length of the poisson process for each agent/node
     G = barabasiAlbertGraph(max_nodes, max_edges)
-    addFeature(G)
+    addFeature(G,0)
     getCurrentOpinion(G)
     # key = update time, value = update node
     schedule = {}
@@ -100,8 +103,8 @@ def voterModel(max_nodes, max_edges, lamb, num_updates, process_time):
         # arrival_time is the arrival time for ith update
         arrival_time = 0
         while(True):
-            p = random.uniform(0, 1)
-            inter_arrival_time = - math.log(1.0 - p) / lamb
+            p = np.random.uniform(0, 1)
+            inter_arrival_time = - math.log(1.0 - p)
             arrival_time += inter_arrival_time
             if arrival_time <= process_time:
                 if arrival_time in schedule:
@@ -115,7 +118,7 @@ def voterModel(max_nodes, max_edges, lamb, num_updates, process_time):
     update_count = 0
     for update in sorted_schedule.keys():
         for node in sorted_schedule[update]:
-            G.nodes[node]['opinion'] = G.nodes[random.choice([n for n in G.neighbors(node)])]['opinion']
+            G.nodes[node]['opinion'] = G.nodes[np.random.choice([n for n in G.neighbors(node)])]['opinion']
             # print("At time %f, Node %d changed its opinion to %d. There are %d has pos opinion" %
             #       (time_t, node, G.nodes[node]['opinion'], getPosOpinion(G)))
             if getPosOpinion(G) == 0 or getPosOpinion(G) == max_nodes:
@@ -131,7 +134,7 @@ def voterModel(max_nodes, max_edges, lamb, num_updates, process_time):
 
 def voterPiper(max_nodes, max_no_edge, poisson_lambda, discrete_process_time):
     G = barabasiAlbertGraph(max_nodes, max_no_edge)
-    addFeature(G)
+    addFeature(G,0)
     getCurrentOpinion(G)
     events = {}
     for node in G:
@@ -165,5 +168,6 @@ def voterPiper(max_nodes, max_no_edge, poisson_lambda, discrete_process_time):
     return
 
 
-voterModel(100, 50, 1, 6000, 50)
+voterModelStubborn(100, 50, 6000, 50, 10)
 
+# voterModel(100, 50, 6000, 50)
