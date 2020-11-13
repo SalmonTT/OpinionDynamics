@@ -216,12 +216,6 @@ def barabasiAlbertGraph(no_node, max_no_edge, seed=None):
     # plotGraph(G)
     return G
 
-# Add attributes to nodes in G
-def addFeature(G):
-    for node in G:
-        init_opinion = random.choice([-1, 1])
-        G.nodes[node]['opinion']=init_opinion
-    return G
 
 def plotPAgraph():
     # preferentialAttachment_2ndOrder(100, loner=False)
