@@ -59,7 +59,7 @@ def voterModelStubborn(max_nodes, max_edges, num_updates, process_time, num_stub
     schedule = {}
     for node in G:
         arrival_time = 0
-        while (True):
+        while True:
             p = np.random.uniform(0, 1)
             inter_arrival_time = - math.log(1.0 - p)
             arrival_time += inter_arrival_time
@@ -102,7 +102,7 @@ def voterModel(max_nodes, max_edges, num_updates, process_time):
     for node in G:
         # arrival_time is the arrival time for ith update
         arrival_time = 0
-        while(True):
+        while True:
             p = np.random.uniform(0, 1)
             inter_arrival_time = - math.log(1.0 - p)
             arrival_time += inter_arrival_time
