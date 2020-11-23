@@ -7,8 +7,8 @@ from pyvis.network import Network
 def plotGraph(G):
     # plotGraphWithDegree(G)
     # plotGraphWithNodeSizeDependOnNodeDegree(G)
-    # plotGraphWithNodeColorDependOnNodeDegree(G)
-    plotGraphCombined(G)
+    plotGraphWithNodeColorDependOnNodeDegree(G)
+    # plotGraphCombined(G)
     # interactiveGraph(G)
     # interactiveGraphExtended(G)
 
@@ -16,7 +16,7 @@ def plotGraphWithDegree(G):
     # polt netwrok with nodes' degree labeled
     degree_labels = {}
     for node in G.nodes():
-        degree_labels[node] = G.degree(node);
+        degree_labels[node] = G.degree(node)
     pos = nx.spring_layout(G)
     nx.draw(G, pos, with_labels=False)
     nx.draw_networkx_labels(G, pos, labels=degree_labels, font_size=10, font_color='white')
@@ -44,8 +44,11 @@ def plotGraphWithNodeColorDependOnNodeDegree(G):
             node_size=1000,
             node_color=[mapper.to_rgba(i)
                         for i in D.values()],
-            with_labels=True,
+            with_labels=False,
             font_color='white')
+    # for node in G.nodes():
+    degree_labels = nx.get_node_attributes(G, "opinion")
+    nx.draw_networkx_labels(G, pos, labels=degree_labels, font_size=10, font_color='white')
     plt.show()
 
 def plotGraphCombined(G):
