@@ -77,7 +77,11 @@ def voterModelStubborn(max_nodes, max_edges, num_updates, process_time, num_stub
     for update in sorted_schedule.keys():
         for node in sorted_schedule[update]:
             if G.nodes[node]['stubborness'] != 1:
-                G.nodes[node]['opinion'] = G.nodes[np.random.choice([n for n in G.neighbors(node)])]['opinion']
+                adoption_list = list(G.neighbors(node))
+                adoption_list.append(node)
+                selected_node = np.random.choice([n for n in adoption_list])
+                G.nodes[node]['opinion'] = G.nodes[selected_node]['opinion']
+                # G.nodes[node]['opinion'] = G.nodes[np.random.choice([n for n in G.neighbors(node)])]['opinion']
             # print("At time %f, Node %d changed its opinion to %d. There are %d has pos opinion" %
             #       (time_t, node, G.nodes[node]['opinion'], getPosOpinion(G)))
             if getPosOpinion(G) == 0 or getPosOpinion(G) == max_nodes:
@@ -114,14 +118,19 @@ def voterModel(max_nodes, max_edges, num_updates, process_time):
                     schedule[arrival_time] = [node]
             else: break
 
+    # print(len(schedule))
     sorted_schedule = collections.OrderedDict(sorted(schedule.items()))
-    print(sorted_schedule)
+    # print(sorted_schedule)
     update_count = 0
     for update in sorted_schedule.keys():
         for node in sorted_schedule[update]:
-            G.nodes[node]['opinion'] = G.nodes[np.random.choice([n for n in G.neighbors(node)])]['opinion']
+            adoption_list = list(G.neighbors(node))
+            adoption_list.append(node)
+            selected_node = np.random.choice([n for n in adoption_list])
+            G.nodes[node]['opinion'] = G.nodes[selected_node]['opinion']
+            # G.nodes[node]['opinion'] = G.nodes[np.random.choice([n for n in G.nodes[node] and G.neighbors(node)])]['opinion']
             # print("At time %f, Node %d changed its opinion to %d. There are %d has pos opinion" %
-            #       (time_t, node, G.nodes[node]['opinion'], getPosOpinion(G)))
+            #       (update, node, G.nodes[node]['opinion'], getPosOpinion(G)))
             if getPosOpinion(G) == 0 or getPosOpinion(G) == max_nodes:
                 # print("At %f, after %d iterations, network reaches consensus" % (time_t, no_ite))
                 getCurrentOpinion(G)
@@ -130,11 +139,12 @@ def voterModel(max_nodes, max_edges, num_updates, process_time):
             if update_count >= num_updates:
                 getCurrentOpinion(G)
                 return
-
     getCurrentOpinion(G)
     return
 
-# Below two functions are for silumation use
+# voterModel(10, 5, 1000, 100)
+
+# Below two functions are for simulation use
 def voter(G, num_updates, process_time):
     getCurrentOpinion(G)
     schedule = {}
@@ -154,11 +164,15 @@ def voter(G, num_updates, process_time):
 
     sorted_schedule = collections.OrderedDict(sorted(schedule.items()))
     # print(sorted_schedule)
-    update_count = 0
+    update_count = 1
     for update in sorted_schedule.keys():
         for node in sorted_schedule[update]:
             if G.nodes[node]['stubborness'] != 1:
-                G.nodes[node]['opinion'] = G.nodes[np.random.choice([n for n in G.neighbors(node)])]['opinion']
+                adoption_list = list(G.neighbors(node))
+                adoption_list.append(node)
+                selected_node = np.random.choice([n for n in adoption_list])
+                G.nodes[node]['opinion'] = G.nodes[selected_node]['opinion']
+                # G.nodes[node]['opinion'] = G.nodes[np.random.choice([n for n in G.neighbors(node)])]['opinion']
             # print("At time %f, Node %d changed its opinion to %d. There are %d has pos opinion" %
             #       (time_t, node, G.nodes[node]['opinion'], getPosOpinion(G)))
             if getPosOpinion(G) == 0 or getPosOpinion(G) == nx.number_of_nodes(G):
@@ -199,7 +213,7 @@ def voterMajority(G, num_updates, process_time):
     for update in sorted_schedule.keys():
         for node in sorted_schedule[update]:
             if G.nodes[node]['stubborness'] != 1:
-                neighbor_opi = 0
+                neighbor_opi = G.nodes[node]['opinion']
                 for neighbor in G.neighbors(node):
                     neighbor_opi += G.nodes[neighbor]['opinion']
                 if neighbor_opi > 0:
@@ -226,11 +240,13 @@ def voterMajority(G, num_updates, process_time):
     getCurrentOpinion(G)
     return update_count
 
+
+
 # used for simulation of N opinions
-def addNFeature(G, num):
+def addNFeature(G, no_opin ,num):
     stubborn_agents = random.sample(list(G), num)
     for node in G:
-        G.nodes[node]['opinion'] = int(node)
+        G.nodes[node]['opinion'] = random.randint(1, no_opin)
         if node in stubborn_agents:
             G.nodes[node]['stubborness'] = 1
         else:
@@ -279,7 +295,58 @@ def voterNOpinion(G, num_updates, process_time):
     for update in sorted_schedule.keys():
         for node in sorted_schedule[update]:
             if G.nodes[node]['stubborness'] != 1:
-                G.nodes[node]['opinion'] = G.nodes[np.random.choice([n for n in G.neighbors(node)])]['opinion']
+                adoption_list = list(G.neighbors(node))
+                adoption_list.append(node)
+                selected_node = np.random.choice([n for n in adoption_list])
+                G.nodes[node]['opinion'] = G.nodes[selected_node]['opinion']
+                # G.nodes[node]['opinion'] = G.nodes[np.random.choice([n for n in G.neighbors(node)])]['opinion']
+            # print("At time %f, Node %d changed its opinion to %d. There are %d has pos opinion" %
+            #       (time_t, node, G.nodes[node]['opinion'], getPosOpinion(G)))
+            if reachConsensus(G):
+                # print("At %f, after %d iterations, network reaches consensus" % (time_t, no_ite))
+                print("After %d iterations, consensus reached" % update_count)
+                getCurrentOpinionN(G)
+                return update_count
+            update_count += 1
+            if update_count >= num_updates:
+                print("MAX updates reaches")
+                getCurrentOpinionN(G)
+                return update_count
+
+    print("Process ends with %d iterations" % update_count)
+    getCurrentOpinionN(G)
+    return update_count
+
+def voterNOpinionLPA(G, no_opin, num_updates, process_time):
+    getCurrentOpinionN(G)
+    schedule = {}
+    for node in G:
+        arrival_time = 0
+        while True:
+            p = np.random.uniform(0, 1)
+            inter_arrival_time = - math.log(1.0 - p)
+            arrival_time += inter_arrival_time
+            if arrival_time <= process_time:
+                if arrival_time in schedule:
+                    schedule[arrival_time].append(node)
+                else:
+                    schedule[arrival_time] = [node]
+            else:
+                break
+
+    sorted_schedule = collections.OrderedDict(sorted(schedule.items()))
+    # print(sorted_schedule)
+    update_count = 0
+    for update in sorted_schedule.keys():
+        for node in sorted_schedule[update]:
+            if G.nodes[node]['stubborness'] != 1:
+                neighbor_opinion = [0] * no_opin
+                adoption_list = list(G.neighbors(node))
+                adoption_list.append(node)
+                for neighbor in adoption_list:
+                    opinion_neighbor = G.nodes[neighbor]['opinion']
+                    neighbor_opinion[opinion_neighbor-1] += 1
+                G.nodes[node]['opinion'] = max(neighbor_opinion)
             # print("At time %f, Node %d changed its opinion to %d. There are %d has pos opinion" %
             #       (time_t, node, G.nodes[node]['opinion'], getPosOpinion(G)))
             if reachConsensus(G):
@@ -331,6 +398,7 @@ def voterPiper(max_nodes, max_no_edge, poisson_lambda, discrete_process_time):
 
     getCurrentOpinion(G)
     return
+
 
 
 # voterMajority(nx.barabasi_albert_graph(50, 5), 10000, 100)

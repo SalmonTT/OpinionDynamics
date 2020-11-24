@@ -17,9 +17,6 @@ def cycleGraph(no_node):
 def lineGraph(no_node):
     return nx.path_graph(no_node)
 
-def randomGeometricGraph(no_node, d):
-    return nx.random_geometric_graph(no_node, d)
-
 def erdosRenyiGraph(no_node, p):
     return nx.fast_gnp_random_graph(no_node, p)
 
@@ -36,9 +33,11 @@ def barabasiAlbertGraph(no_node, max_no_edge, seed=None):
         no_edge = random.randint(1, min(max_no_edge, nx.number_of_nodes(G)))
         targets = randomSubset(repeated_nodes, no_edge)
         source += 1
-    # networkAnalysis(G)
-    # plotGraph(G)
+    networkAnalysis(G)
+    plotGraph(G)
     return G
+
+# barabasiAlbertGraph(60, 7, seed=None)
 
 def preferentialAttachment_2ndOrder(max_nodes, c=1.0, loner=False):
     G = nx.Graph()
@@ -61,6 +60,8 @@ def preferentialAttachment_2ndOrder(max_nodes, c=1.0, loner=False):
             rand_node = np.random.randint(0, i - 1)
             G.add_edge(rand_node, i)
 
-    # networkAnalysis(G)
-    # plotGraph(G)
+    networkAnalysis(G)
+    plotGraph(G)
     return G
+
+# preferentialAttachment_2ndOrder(60, c=0.5)
