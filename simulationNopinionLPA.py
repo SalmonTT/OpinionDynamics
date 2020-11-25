@@ -1,5 +1,5 @@
 from buildGraph import *
-from voter import *
+from voter import addNFeature, voterNOpinionLPA
 from networkAnalysis import csvAnalysis
 from plotGraph import plotGraph
 import pandas as pd
@@ -19,8 +19,8 @@ def simulationNOpinionsLPA():
     graphs = [complete, star, cycle, line, er, pa, pa2]
 
     # Voter algorithm starts
-    max_ite = 500
-    max_time = 55
+    max_ite = 10000
+    max_time = 5500
     print("Max iterations allowed is %d. Max process time is %d" % (max_ite, max_time))
     for graph in graphs:
         graph_name = [k for k, v in locals().items() if v == graph][0]

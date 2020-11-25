@@ -1,7 +1,7 @@
 import random
 import numpy as np
 import networkx as nx
-from plotGraph import *
+from plotGraph import plotGraph
 from networkAnalysis import networkAnalysis
 from PA import randomSubset
 
@@ -33,11 +33,11 @@ def barabasiAlbertGraph(no_node, max_no_edge, seed=None):
         no_edge = random.randint(1, min(max_no_edge, nx.number_of_nodes(G)))
         targets = randomSubset(repeated_nodes, no_edge)
         source += 1
-    networkAnalysis(G)
-    plotGraph(G)
+    # networkAnalysis(G)
+    # plotGraph(G)
     return G
 
-# barabasiAlbertGraph(60, 7, seed=None)
+# barabasiAlbertGraph(80, 3, seed=None)
 
 def preferentialAttachment_2ndOrder(max_nodes, c=1.0, loner=False):
     G = nx.Graph()
@@ -60,8 +60,8 @@ def preferentialAttachment_2ndOrder(max_nodes, c=1.0, loner=False):
             rand_node = np.random.randint(0, i - 1)
             G.add_edge(rand_node, i)
 
-    networkAnalysis(G)
-    plotGraph(G)
+    # networkAnalysis(G)
+    # plotGraph(G)
     return G
 
-# preferentialAttachment_2ndOrder(60, c=0.5)
+# preferentialAttachment_2ndOrder(80, c=0.5)
