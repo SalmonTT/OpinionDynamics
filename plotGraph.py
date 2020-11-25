@@ -12,6 +12,8 @@ def plotGraph(G):
     # interactiveGraph(G)
     # interactiveGraphExtended(G)
 
+
+
 def plotGraphWithDegree(G):
     # polt netwrok with nodes' degree labeled
     degree_labels = {}
@@ -21,6 +23,8 @@ def plotGraphWithDegree(G):
     nx.draw(G, pos, with_labels=False)
     nx.draw_networkx_labels(G, pos, labels=degree_labels, font_size=10, font_color='white')
     plt.show()
+
+# plotGraph(nx.watts_strogatz_graph(100, 10, 0.5))
 
 def plotGraphWithNodeSizeDependOnNodeDegree(G):
     # plot network with nodes' size depend on nodes' degree

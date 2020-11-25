@@ -11,11 +11,8 @@ def completeGraph(no_node):
 def starGraph(no_node):
     return nx.star_graph(no_node)
 
-def cycleGraph(no_node):
-    return nx.cycle_graph(no_node)
-
-def lineGraph(no_node):
-    return nx.path_graph(no_node)
+def smallWroldGraph(no_node, k):
+    return nx.watts_strogatz_graph(no_node, k, 0.5)
 
 def erdosRenyiGraph(no_node, p):
     return nx.fast_gnp_random_graph(no_node, p)

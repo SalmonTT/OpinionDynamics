@@ -10,12 +10,11 @@ def simulation():
     n = 100
     complete = completeGraph(n)
     star = starGraph(n-1)
-    cycle = cycleGraph(n)
-    line = lineGraph(n)
+    sw = smallWroldGraph(n, n/10)
     er = erdosRenyiGraph(n, 0.5)
     pa = barabasiAlbertGraph(n, 10, seed=None)
     pa2 = preferentialAttachment_2ndOrder(n, 0.5, False)
-    graphs = [complete, star, cycle, line, er, pa, pa2]
+    graphs = [complete, star, sw, er, pa, pa2]
 
     # Voter algorithm starts
     max_ite = 20000
@@ -44,8 +43,6 @@ def mulSimulation():
         n = 100
         complete = completeGraph(n)
         star = starGraph(n - 1)
-        cycle = cycleGraph(n)
-        line = lineGraph(n)
         er = erdosRenyiGraph(n, 0.5)
         pa = barabasiAlbertGraph(n, 10, seed=None)
         pa2 = preferentialAttachment_2ndOrder(n, 0.5, False)
