@@ -10,13 +10,11 @@ def simulationNOpinionsLPA():
     n = 10
     complete = completeGraph(n)
     star = starGraph(n-1)
-    cycle = cycleGraph(n)
-    line = lineGraph(n)
     # geometric = randomGeometricGraph(n, 0.1)
     er = erdosRenyiGraph(n, 0.5)
     pa = barabasiAlbertGraph(n, 3, seed=None)
     pa2 = preferentialAttachment_2ndOrder(n, 0.5, False)
-    graphs = [complete, star, cycle, line, er, pa, pa2]
+    graphs = [complete, star, er, pa, pa2]
 
     # Voter algorithm starts
     max_ite = 10000
