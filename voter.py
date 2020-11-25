@@ -274,7 +274,19 @@ def getCurrentOpinionN(G):
     print(opinion)
     return opinion
 
+
+
+def setDistribution(G, no_opin):
+    distribution = getCurrentOpinionN(G)
+    for k, value in distribution.items():
+        distribution[k] = len(value)
+    for i in range(no_opin):
+        if i+1 not in distribution:
+            distribution[i+1]=0
+    return distribution
+
 def voterNOpinion(G, num_updates, process_time):
+    addNFeature(G, 2, 0)
     getCurrentOpinionN(G)
     schedule = {}
     for node in G:
@@ -293,6 +305,9 @@ def voterNOpinion(G, num_updates, process_time):
 
     sorted_schedule = collections.OrderedDict(sorted(schedule.items()))
     # print(sorted_schedule)
+    stable_count = 0
+    stable = {}
+    max_stable = G.number_of_nodes()
     update_count = 0
     for update in sorted_schedule.keys():
         for node in sorted_schedule[update]:
@@ -304,21 +319,88 @@ def voterNOpinion(G, num_updates, process_time):
                 # G.nodes[node]['opinion'] = G.nodes[np.random.choice([n for n in G.neighbors(node)])]['opinion']
             # print("At time %f, Node %d changed its opinion to %d. There are %d has pos opinion" %
             #       (time_t, node, G.nodes[node]['opinion'], getPosOpinion(G)))
+                current_opinion = getCurrentOpinionN(G)
             if reachConsensus(G):
                 # print("At %f, after %d iterations, network reaches consensus" % (time_t, no_ite))
                 print("After %d iterations, consensus reached" % update_count)
                 getCurrentOpinionN(G)
-                return update_count
+                return update_count, 0
+
+            if stable == current_opinion:
+                stable_count += 1
+                if stable_count > max_stable:
+                    print("After %d iterations, stable distributions reached" % update_count)
+                    getCurrentOpinionN(G)
+                    return update_count, 1
+            else:
+                stable = current_opinion.copy()
+                stable_count = 0
+
             update_count += 1
             if update_count >= num_updates:
                 print("MAX updates reaches")
                 getCurrentOpinionN(G)
-                return update_count
+                return update_count, 2
 
     print("Process ends with %d iterations" % update_count)
     getCurrentOpinionN(G)
-    return update_count
+    return update_count, 2
 
+
+def voterNOpiniontest(G, no_opin, num_updates, process_time):
+    addNFeature(G, no_opin, 0)
+    getCurrentOpinionN(G)
+    schedule = {}
+    for node in G:
+        arrival_time = 0
+        while True:
+            p = np.random.uniform(0, 1)
+            inter_arrival_time = - math.log(1.0 - p)
+            arrival_time += inter_arrival_time
+            if arrival_time <= process_time:
+                if arrival_time in schedule:
+                    schedule[arrival_time].append(node)
+                else:
+                    schedule[arrival_time] = [node]
+            else:
+                break
+    sorted_schedule = collections.OrderedDict(sorted(schedule.items()))
+    update_count = 0
+    stable_count = 0
+    stable = {}
+    max_stable = G.number_of_nodes() * 1.5
+    for update in sorted_schedule.keys():
+        for node in sorted_schedule[update]:
+            if G.nodes[node]['stubborness'] != 1:
+                adoption_list = list(G.neighbors(node))
+                adoption_list.append(node)
+                selected_node = np.random.choice([n for n in adoption_list])
+                G.nodes[node]['opinion'] = G.nodes[selected_node]['opinion']
+            current_opinion = getCurrentOpinionN(G)
+            if reachConsensus(G):
+                print("After %d iterations, consensus reached" % update_count)
+                distribution = setDistribution(G, no_opin)
+                return update_count, 0, distribution
+            if stable == current_opinion:
+                stable_count += 1
+                if stable_count > max_stable:
+                    print("After %d iterations, stable distributions reached" % update_count)
+                    distribution = setDistribution(G, no_opin)
+                    return update_count, 1, distribution
+            else:
+                stable = current_opinion.copy()
+                stable_count = 0
+            update_count += 1
+            if update_count >= num_updates:
+                print("MAX updates reaches")
+                distribution = setDistribution(G, no_opin)
+                return update_count, 2, distribution
+    print("Process ends with %d iterations" % update_count)
+    distribution = setDistribution(G, no_opin)
+    return update_count, 2, distribution
+
+# n, m, l = voterNOpiniontest(preferentialAttachment_2ndOrder(10, 0.5), 2, 10, 1200)
+# print(n,m,l)
 
 
 
@@ -346,7 +428,7 @@ def voterNOpinionLPA(G, no_opin, num_updates, process_time):
     update_count = 0
     stable_count = 0
     stable = {}
-    max_stable = G.number_of_nodes()/5
+    max_stable = 50
     for update in sorted_schedule.keys():
         for node in sorted_schedule[update]:
             if G.nodes[node]['stubborness'] != 1:
@@ -361,22 +443,22 @@ def voterNOpinionLPA(G, no_opin, num_updates, process_time):
                     neighbor_opinion[opinion_neighbor-1] += 1
 
                 G.nodes[node]['opinion'] = neighbor_opinion.index(max(neighbor_opinion))+1
-                current_opinion = getCurrentOpinionN(G)
+            current_opinion = getCurrentOpinionN(G)
             # print("At time %f, Node %d changed its opinion to %d. There are %d has pos opinion" %
             #       (time_t, node, G.nodes[node]['opinion'], getPosOpinion(G)))
 
             if reachConsensus(G):
                 # print("At %f, after %d iterations, network reaches consensus" % (time_t, no_ite))
                 print("After %d iterations, consensus reached" % update_count)
-                getCurrentOpinionN(G)
-                return update_count
+                distribution = setDistribution(G, no_opin)
+                return update_count, 0, distribution
 
             if stable == current_opinion:
                 stable_count += 1
                 if stable_count > max_stable:
                     print("After %d iterations, stable distributions reached" % update_count)
-                    getCurrentOpinionN(G)
-                    return update_count
+                    distribution = setDistribution(G, no_opin)
+                    return update_count, 1, distribution
             else:
                 stable = current_opinion.copy()
                 stable_count = 0
@@ -384,15 +466,16 @@ def voterNOpinionLPA(G, no_opin, num_updates, process_time):
             update_count += 1
             if update_count >= num_updates:
                 print("MAX updates reaches")
-                getCurrentOpinionN(G)
-                return update_count
+                distribution = setDistribution(G, no_opin)
+                return update_count, 2, distribution
 
     print("Process ends with %d iterations" % update_count)
-    getCurrentOpinionN(G)
-    return update_count
+    distribution = setDistribution(G, no_opin)
+    return update_count, 2, distribution
 
 # voterNOpinionLPA(nx.barabasi_albert_graph(10, 3), 3, 50, 10)
-# voterNOpinionLPA(preferentialAttachment_2ndOrder(100, 0.5), 3, 500, 100)
+# n, m, l = voterNOpinionLPA(preferentialAttachment_2ndOrder(20, 0.5), 3, 500, 100)
+# print(n, m, l)
 
 def voterPiper(max_nodes, max_no_edge, poisson_lambda, discrete_process_time):
     G = barabasiAlbertGraph(max_nodes, max_no_edge)
