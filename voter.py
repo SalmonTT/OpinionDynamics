@@ -7,6 +7,7 @@ import numpy as np
 import math
 import collections
 import pandas as pd
+from buildGraph import *
 
 
 # Add attributes to nodes in G
@@ -318,6 +319,7 @@ def voterNOpinion(G, num_updates, process_time):
     return update_count
 
 def voterNOpinionLPA(G, no_opin, num_updates, process_time):
+    addNFeature(G, no_opin, 0)
     getCurrentOpinionN(G)
     schedule = {}
     for node in G:
@@ -343,10 +345,15 @@ def voterNOpinionLPA(G, no_opin, num_updates, process_time):
                 neighbor_opinion = [0] * no_opin
                 adoption_list = list(G.neighbors(node))
                 adoption_list.append(node)
+
                 for neighbor in adoption_list:
+                    # print("neighbor is %d"%neighbor)
                     opinion_neighbor = G.nodes[neighbor]['opinion']
+                    # print("neighbor %d hold opinion %d "%(neighbor, opinion_neighbor))
                     neighbor_opinion[opinion_neighbor-1] += 1
-                G.nodes[node]['opinion'] = max(neighbor_opinion)
+
+                G.nodes[node]['opinion'] = neighbor_opinion.index(max(neighbor_opinion))+1
+                getCurrentOpinionN(G)
             # print("At time %f, Node %d changed its opinion to %d. There are %d has pos opinion" %
             #       (time_t, node, G.nodes[node]['opinion'], getPosOpinion(G)))
             if reachConsensus(G):
@@ -363,6 +370,9 @@ def voterNOpinionLPA(G, no_opin, num_updates, process_time):
     print("Process ends with %d iterations" % update_count)
     getCurrentOpinionN(G)
     return update_count
+
+# voterNOpinionLPA(nx.barabasi_albert_graph(10, 3), 3, 50, 10)
+voterNOpinionLPA(preferentialAttachment_2ndOrder(100, 0.5), 3, 500, 100)
 
 def voterPiper(max_nodes, max_no_edge, poisson_lambda, discrete_process_time):
     G = barabasiAlbertGraph(max_nodes, max_no_edge)

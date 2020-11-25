@@ -4,6 +4,7 @@ from operator import itemgetter
 import matplotlib.pyplot as plt
 import json
 import pandas as pd
+import numpy as np
 
 # G = some networkx graph
 
@@ -12,8 +13,6 @@ def networkAnalysis(G):
     # degreeHistogram(G)
     degreeDistribution(G)
     # clusteringCoefficient(G)
-
-
 
 def get_top_keys(dictionary, top):
     items = sorted(dictionary.items(), reverse=True, key=lambda x: x[1])
@@ -98,6 +97,12 @@ def fullAnalysis(G):
 
 def csvAnalysis(filename):
     df = pd.read_csv(filename)
+    # df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
+    # pd.concat([df, pd.DataFrame(columns = ['cycle','line'])])
+    # df[['cycle','line']]=[20000,20000]
+    # df = df[['complete', 'star', 'cycle', 'line', 'er', 'pa', 'pa2']]
+    # df.to_csv(filename, index=False, header=True)
+    # print(df.head())
     pd.set_option('display.expand_frame_repr', False)
     print(df.describe(include='all'))
     top_10 = pd.DataFrame()
@@ -113,3 +118,25 @@ def csvAnalysis(filename):
     print(last_10)
     df.hist(figsize=(20, 20))
     plt.show()
+
+def csvA(filename):
+    df = pd.read_csv(filename)
+    df = df.replace(20000, np.nan)
+    pd.set_option('display.expand_frame_repr', False)
+    print(df.describe(include='all'))
+    top_10 = pd.DataFrame()
+    last_10 = pd.DataFrame()
+    # print(df.head(10))
+    for graph in list(df.columns):
+        max = df.sort_values(graph, ascending=False).head(10)
+        top_10[graph] = max[graph].tolist()
+        min = df.sort_values(graph, ascending=True).head(10)
+        last_10[graph] = min[graph].tolist()
+    print("The top ten are: ")
+    print(top_10)
+    print("the min ten are: ")
+    print(last_10)
+    df.hist(figsize=(20, 20))
+    plt.show()
+
+# csvA('voter_3_10.csv')

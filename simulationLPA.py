@@ -1,5 +1,5 @@
 from buildGraph import *
-from voter import *
+from voter import addFeature, voterMajority
 from networkAnalysis import csvAnalysis
 from plotGraph import plotGraph
 import pandas as pd
@@ -7,16 +7,17 @@ import matplotlib.pyplot as plt
 
 def simulationMajority():
     # Set number of nodes and start building graph
-    n = 70
+    n = 100
     complete = completeGraph(n)
     star = starGraph(n-1)
-    cycle = cycleGraph(n)
-    line = lineGraph(n)
+    # cycle = cycleGraph(n)
+    # line = lineGraph(n)
     # geometric = randomGeometricGraph(n, 0.1)
     er = erdosRenyiGraph(n, 0.5)
-    pa = barabasiAlbertGraph(n, 7, seed=None)
+    pa = barabasiAlbertGraph(n, 10, seed=None)
     pa2 = preferentialAttachment_2ndOrder(n, 0.5, False)
-    graphs = [complete, star, cycle, line, er, pa, pa2]
+    # graphs = [complete, star, cycle, line, er, pa, pa2]
+    graphs = [complete, star, er, pa, pa2]
 
     # Voter algorithm starts
     max_ite = 20000
@@ -35,23 +36,24 @@ def simulationMajority():
 def mulSimulationMajority():
     outcome = {'complete':[],
                'star':[],
-               'cycle':[],
-               'line':[],
+               # 'cycle':[],
+               # 'line':[],
                'er':[],
                'pa':[],
                'pa2':[]}
 
     for i in range(100):
-        n = 70
+        n = 100
         complete = completeGraph(n)
         star = starGraph(n - 1)
-        cycle = cycleGraph(n)
-        line = lineGraph(n)
+        # cycle = cycleGraph(n)
+        # line = lineGraph(n)
         # geometric = randomGeometricGraph(n, 0.1)
         er = erdosRenyiGraph(n, 0.5)
-        pa = barabasiAlbertGraph(n, 7, seed=None)
+        pa = barabasiAlbertGraph(n, 10, seed=None)
         pa2 = preferentialAttachment_2ndOrder(n, 0.5, False)
-        graphs = [complete, star, cycle, line, er, pa, pa2]
+        graphs = [complete, star, er, pa, pa2]
+        # graphs = [complete, star, cycle, line, er, pa, pa2]
 
         max_ite = 20000
         max_time = 2200
@@ -65,16 +67,17 @@ def mulSimulationMajority():
             # plotGraph(graph)
             print()
 
-    df = pd.DataFrame(outcome, columns = ['complete', 'star', 'cycle', 'line', 'er', 'pa', 'pa2'])
+    df = pd.DataFrame(outcome, columns = ['complete', 'star', 'er', 'pa', 'pa2'])
+    # df = pd.DataFrame(outcome, columns=['complete', 'star', 'cycle', 'line', 'er', 'pa', 'pa2'])
     print(df.head())
-    df.to_csv(r'C:\Users\PP\Desktop\2020-21 Term1\SEEM FYP\Newrepo\OpinionDynamics\LPA_binary_70.csv',
+    df.to_csv(r'C:\Users\PP\Desktop\2020-21 Term1\SEEM FYP\Newrepo\OpinionDynamics\LPA_binary_100.csv',
               index=False, header=True)
 
 
 # simulation()
 # mulSimulationMajority()
 # mulSimulationMajority1()
-csvAnalysis('LPA_binary_70.csv')
+csvAnalysis('LPA_binary_100.csv')
 
 
 def mulSimulationMajority1():

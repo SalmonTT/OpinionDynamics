@@ -1,5 +1,5 @@
 from buildGraph import *
-from voter import *
+from voter import addNFeature, voterNOpinion
 from networkAnalysis import csvAnalysis
 from plotGraph import plotGraph
 import pandas as pd
