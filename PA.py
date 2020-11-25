@@ -10,7 +10,7 @@ def netwrokxBApreferentialAttachment(max_nodes, no_edges):
     networkAnalysis(G)
     return G
 
-
+# netwrokxBApreferentialAttachment(100, 5)
 
 def preferentialAttachmentV1(max_nodes, loner=False):
     G = nx.Graph()
@@ -96,10 +96,11 @@ def preferentialAttachmentV3(max_nodes, loner=False):
             rand_node = node_list[random.choice(node_list)]
             G.add_edge(rand_node, i)
 
-    # networkAnalysis(G)
-    # plotGraph(G)
+    networkAnalysis(G)
+    plotGraph(G)
     return G
 
+# preferentialAttachmentV3(100)
 
 def preferentialAttachmentART(max_nodes = 100, loner=False, p_multi=2.0):
     G = nx.Graph()
@@ -157,7 +158,7 @@ def preferentialAttachment_2ndOrder(max_nodes, c=1.0, loner=False):
     # plotGraph(G)
     return G
 
-
+# preferentialAttachment_2ndOrder(10, c=0.5, loner=False)
 
 def preferentialAttachment_MDApseudo(max_nodes, m0, m):
     G = preferentialAttachmentV2(m0, 100)
@@ -215,6 +216,8 @@ def barabasiAlbertGraph(no_node, max_no_edge, seed=None):
     # networkAnalysis(G)
     # plotGraph(G)
     return G
+
+# barabasiAlbertGraph(10, 3)
 
 
 def plotPAgraph():

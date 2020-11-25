@@ -3,13 +3,14 @@ import collections
 from operator import itemgetter
 import matplotlib.pyplot as plt
 import json
+import pandas as pd
 
 # G = some networkx graph
 
 def networkAnalysis(G):
-    basicInfo(G)
+    # basicInfo(G)
     # degreeHistogram(G)
-    # degreeDistribution(G)
+    degreeDistribution(G)
     # clusteringCoefficient(G)
 
 
@@ -94,3 +95,21 @@ def fullAnalysis(G):
     degreeDistribution(G)
     clusteringCoefficient(G)
     return
+
+def csvAnalysis(filename):
+    df = pd.read_csv(filename)
+    pd.set_option('display.expand_frame_repr', False)
+    print(df.describe(include='all'))
+    top_10 = pd.DataFrame()
+    last_10 = pd.DataFrame()
+    for graph in list(df.columns):
+        max = df.sort_values(graph, ascending=False).head(10)
+        top_10[graph] = max[graph].tolist()
+        min = df.sort_values(graph, ascending=True).head(10)
+        last_10[graph] = min[graph].tolist()
+    print("The top ten are: ")
+    print(top_10)
+    print("the min ten are: ")
+    print(last_10)
+    df.hist(figsize=(20, 20))
+    plt.show()
