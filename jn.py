@@ -37,7 +37,7 @@ def randomSubset(repeated_nodes, no_edge):
 
 
 
-def barabasiAlbertGraph(no_node, max_no_edge):
+def barabasiAlbertGraph(no_node):
     G = nx.empty_graph(2)
     targets = list(range(2))
     repeated_nodes = []
@@ -47,7 +47,7 @@ def barabasiAlbertGraph(no_node, max_no_edge):
         G.add_edges_from(zip([source] * no_edge, targets))
         repeated_nodes.extend(targets)
         repeated_nodes.extend([source] * no_edge)
-        no_edge = random.randint(1, min(max_no_edge, nx.number_of_nodes(G)))
+        no_edge = random.randint(1, nx.number_of_nodes(G))
         targets = randomSubset(repeated_nodes, no_edge)
         source += 1
     return G
@@ -131,7 +131,7 @@ def setDistribution(G, no_opin):
 
 
 # Voter model
-def voterNOpinion(G, no_opin, num_updates, process_time):
+def voterNOpinion(G, no_opin, max_iter, max_time):
     getCurrentOpinionN(G)
     schedule = {}
     for node in G:
@@ -140,7 +140,7 @@ def voterNOpinion(G, no_opin, num_updates, process_time):
             p = np.random.uniform(0, 1)
             inter_arrival_time = - math.log(1.0 - p)
             arrival_time += inter_arrival_time
-            if arrival_time <= process_time:
+            if arrival_time <= max_time:
                 if arrival_time in schedule:
                     schedule[arrival_time].append(node)
                 else:
@@ -174,7 +174,7 @@ def voterNOpinion(G, no_opin, num_updates, process_time):
                 stable = current_opinion.copy()
                 stable_count = 0
             update_count += 1
-            if update_count >= num_updates:
+            if update_count >= max_iter:
                 print("MAX updates reaches")
                 distribution = setDistribution(G, no_opin)
                 return update_count, 2, distribution
@@ -185,7 +185,7 @@ def voterNOpinion(G, no_opin, num_updates, process_time):
 
 
 # LPA
-def voterNOpinionLPA(G, no_opin, num_updates, process_time):
+def voterNOpinionLPA(G, no_opin, max_iter, max_time):
     addNFeature(G, no_opin, 0)
     getCurrentOpinionN(G)
     schedule = {}
@@ -195,7 +195,7 @@ def voterNOpinionLPA(G, no_opin, num_updates, process_time):
             p = np.random.uniform(0, 1)
             inter_arrival_time = - math.log(1.0 - p)
             arrival_time += inter_arrival_time
-            if arrival_time <= process_time:
+            if arrival_time <= max_time:
                 if arrival_time in schedule:
                     schedule[arrival_time].append(node)
                 else:
@@ -232,7 +232,7 @@ def voterNOpinionLPA(G, no_opin, num_updates, process_time):
                 stable = current_opinion.copy()
                 stable_count = 0
             update_count += 1
-            if update_count >= num_updates:
+            if update_count >= max_iter:
                 print("MAX updates reaches")
                 distribution = setDistribution(G, no_opin)
                 return update_count, 2, distribution
@@ -243,33 +243,33 @@ def voterNOpinionLPA(G, no_opin, num_updates, process_time):
 
 
 # for no_of_nodes = (100,250,500,750,1000), run the following:
-def simulation(n, max_ite, max_time):
-    # Create four dataframes, graph_stable = 1 means it reaches stable distribution, 0 means it reaches consensus,
+def simulation(n, max_iter, max_time):
+    # Create four dataframes, timeType = 1 means it reaches stable distribution, 0 means it reaches consensus,
     # 2 means meet MAX iterations
-    voter_2 = {'Complete': [], 'Complete_stable': [], 'Complete_stable1': [],
-               'Star': [], 'Star_stable': [], 'Star_stable1': [],
-               'SW': [], 'SW_stable': [], 'SW_stable1': [],
-               'ER': [], 'ER_stable': [], 'ER_stable1': [],
-               'PA': [], 'PA_stable': [], 'PA_stable1': [],
-               'L2': [], 'L2_stable': [], 'L2_stable1': []}
-    voter_3 = {'Complete': [], 'Complete_stable': [], 'Complete_stable1': [], 'Complete_stable2': [],
-               'Star': [], 'Star_stable': [], 'Star_stable1': [], 'Star_stable2': [],
-               'SW': [], 'SW_stable': [], 'SW_stable1': [], 'SW_stable2': [],
-               'ER': [], 'ER_stable': [], 'ER_stable1': [], 'ER_stable2': [],
-               'PA': [], 'PA_stable': [], 'PA_stable1': [], 'PA_stable2': [],
-               'L2': [], 'L2_stable': [], 'L2_stable1': [], 'L2_stable2': []}
-    LPA_2 = {'Complete': [], 'Complete_stable': [], 'Complete_stable1': [],
-             'Star': [], 'Star_stable': [], 'Star_stable1': [],
-             'SW': [], 'SW_stable': [], 'SW_stable1': [],
-             'ER': [], 'ER_stable': [], 'ER_stable1': [],
-             'PA': [], 'PA_stable': [], 'PA_stable1': [],
-             'L2': [], 'L2_stable': [], 'L2_stable1': []}
-    LPA_3 = {'Complete': [], 'Complete_stable': [], 'Complete_stable1': [], 'Complete_stable2': [],
-             'Star': [], 'Star_stable': [], 'Star_stable1': [], 'Star_stable2': [],
-             'SW': [], 'SW_stable': [], 'SW_stable1': [], 'SW_stable2': [],
-             'ER': [], 'ER_stable': [], 'ER_stable1': [], 'ER_stable2': [],
-             'PA': [], 'PA_stable': [], 'PA_stable1': [], 'PA_stable2': [],
-             'L2': [], 'L2_stable': [], 'L2_stable1': [], 'L2_stable2': []}
+    voter_2 = {'Complete_time': [], 'Complete_timeType': [], 'Complete_opinion1': [],
+               'Star_time': [], 'Star_timeType': [], 'Star_opinion1': [],
+               'SW_time': [], 'SW_timeType': [], 'SW_opinion1': [],
+               'ER_time': [], 'ER_timeType': [], 'ER_opinion1': [],
+               'PA_time': [], 'PA_timeType': [], 'PA_opinion1': [],
+               'L2_time': [], 'L2_timeType': [], 'L2_opinion1': []}
+    voter_3 = {'Complete_time': [], 'Complete_timeType': [], 'Complete_opinion1': [], 'Complete_opinion2': [],
+               'Star_time': [], 'Star_timeType': [], 'Star_opinion1': [], 'Star_opinion2': [],
+               'SW_time': [], 'SW_timeType': [], 'SW_opinion1': [], 'SW_opinion2': [],
+               'ER_time': [], 'ER_timeType': [], 'ER_opinion1': [], 'ER_opinion2': [],
+               'PA_time': [], 'PA_timeType': [], 'PA_opinion1': [], 'PA_opinion2': [],
+               'L2_time': [], 'L2_timeType': [], 'L2_opinion1': [], 'L2_opinion2': []}
+    LPA_2 = {'Complete_time': [], 'Complete_timeType': [], 'Complete_opinion1': [],
+               'Star_time': [], 'Star_timeType': [], 'Star_opinion1': [],
+               'SW_time': [], 'SW_timeType': [], 'SW_opinion1': [],
+               'ER_time': [], 'ER_timeType': [], 'ER_opinion1': [],
+               'PA_time': [], 'PA_timeType': [], 'PA_opinion1': [],
+               'L2_time': [], 'L2_timeType': [], 'L2_opinion1': []}
+    LPA_3 = {'Complete_time': [], 'Complete_timeType': [], 'Complete_opinion1': [], 'Complete_opinion2': [],
+               'Star_time': [], 'Star_timeType': [], 'Star_opinion1': [], 'Star_opinion2': [],
+               'SW_time': [], 'SW_timeType': [], 'SW_opinion1': [], 'SW_opinion2': [],
+               'ER_time': [], 'ER_timeType': [], 'ER_opinion1': [], 'ER_opinion2': [],
+               'PA_time': [], 'PA_timeType': [], 'PA_opinion1': [], 'PA_opinion2': [],
+               'L2_time': [], 'L2_timeType': [], 'L2_opinion1': [], 'L2_opinion2': []}
 
     # Run 100 times
     for i in range(5):
@@ -280,7 +280,7 @@ def simulation(n, max_ite, max_time):
         SW = smallWroldGraph(n, int(n / 10))
         ER = erdosRenyiGraph(n, 0.5)
         # Update it according to n
-        PA = barabasiAlbertGraph(n, 10)
+        PA = barabasiAlbertGraph(n)
         L2 = preferentialAttachment_2ndOrder(n, 0.5, False)
         graphs = [Complete, Star, SW, ER, PA, L2]
 
@@ -293,16 +293,16 @@ def simulation(n, max_ite, max_time):
             addNFeature(graph_copy1, 2, 0)
             graph_copy2 = graph_copy1.copy()
             print("This is for voter model------------------------------")
-            voter_ite_2, voter_2_stable, voter_2_distribution = voterNOpinion(graph_copy1, 2, max_ite, max_time)
+            voter_ite_2, voter_2_stable, voter_2_distribution = voterNOpinion(graph_copy1, 2, max_iter, max_time)
             print("This is for LPA------------------------------")
-            LPA_ite_2, LPA_2_stable, LPA_2_distribution = voterNOpinionLPA(graph_copy2, 2, max_ite, max_time)
+            LPA_ite_2, LPA_2_stable, LPA_2_distribution = voterNOpinionLPA(graph_copy2, 2, max_iter, max_time)
             # add to dataframe
-            voter_2[graph_name].append(voter_ite_2)
-            voter_2[graph_name + '_stable'].append(voter_2_stable)
-            voter_2[graph_name + '_stable1'].append(voter_2_distribution.get(1))
-            LPA_2[graph_name].append(LPA_ite_2)
-            LPA_2[graph_name + '_stable'].append(LPA_2_stable)
-            LPA_2[graph_name + '_stable1'].append(LPA_2_distribution.get(1))
+            voter_2[graph_name + '_time'].append(voter_ite_2)
+            voter_2[graph_name + '_timeType'].append(voter_2_stable)
+            voter_2[graph_name + '_opinion1'].append(voter_2_distribution.get(1))
+            LPA_2[graph_name + '_time'].append(LPA_ite_2)
+            LPA_2[graph_name + '_timeType'].append(LPA_2_stable)
+            LPA_2[graph_name + '_opinion1'].append(LPA_2_distribution.get(1))
 
         # For these 6 graphs, apply voter models and LPA with 3 opinions
         for graph in graphs:
@@ -313,43 +313,43 @@ def simulation(n, max_ite, max_time):
             addNFeature(graph_copy3, 3, 0)
             graph_copy4 = graph_copy3.copy()
             print("This is for voter model------------------------------")
-            voter_ite_3, voter_3_stable, voter_3_distribution = voterNOpinion(graph_copy3, 2, max_ite, max_time)
+            voter_ite_3, voter_3_stable, voter_3_distribution = voterNOpinion(graph_copy3, 2, max_iter, max_time)
             print("This is for LPA------------------------------")
-            LPA_ite_3, LPA_3_stable, LPA_3_distribution = voterNOpinionLPA(graph_copy4, 3, max_ite, max_time)
+            LPA_ite_3, LPA_3_stable, LPA_3_distribution = voterNOpinionLPA(graph_copy4, 3, max_iter, max_time)
             # add to dataframe
-            voter_3[graph_name].append(voter_ite_3)
-            voter_3[graph_name + '_stable'].append(voter_3_stable)
-            voter_3[graph_name + '_stable1'].append(voter_3_distribution.get(1))
-            voter_3[graph_name + '_stable2'].append(voter_3_distribution.get(2))
-            LPA_3[graph_name].append(LPA_ite_3)
-            LPA_3[graph_name + '_stable'].append(LPA_3_stable)
-            LPA_3[graph_name + '_stable1'].append(LPA_3_distribution.get(1))
-            LPA_3[graph_name + '_stable2'].append(LPA_3_distribution.get(2))
+            voter_3[graph_name + '_time'].append(voter_ite_3)
+            voter_3[graph_name + '_timeType'].append(voter_3_stable)
+            voter_3[graph_name + '_opinion1'].append(voter_3_distribution.get(1))
+            voter_3[graph_name + '_opinion2'].append(voter_3_distribution.get(2))
+            LPA_3[graph_name + '_time'].append(LPA_ite_3)
+            LPA_3[graph_name + '_timeType'].append(LPA_3_stable)
+            LPA_3[graph_name + '_opinion1'].append(LPA_3_distribution.get(1))
+            LPA_3[graph_name + '_opinion2'].append(LPA_3_distribution.get(2))
 
-    voter_2_df = pd.DataFrame(voter_2, columns=['Complete', 'Complete_stable', 'Complete_stable1',
-                                                'Star', 'Star_stable', 'Star_stable1',
-                                                'SW', 'SW_stable', 'SW_stable1',
-                                                'ER', 'ER_stable', 'ER_stable1',
-                                                'PA', 'PA_stable', 'PA_stable1',
-                                                'L2', 'L2_stable', 'L2_stable1'])
-    LPA_2_df = pd.DataFrame(LPA_2, columns=['Complete', 'Complete_stable', 'Complete_stable1',
-                                            'Star', 'Star_stable', 'Star_stable1',
-                                            'SW', 'SW_stable', 'SW_stable1',
-                                            'ER', 'ER_stable', 'ER_stable1',
-                                            'PA', 'PA_stable', 'PA_stable1',
-                                            'L2', 'L2_stable', 'L2_stable1'])
-    voter_3_df = pd.DataFrame(voter_3, columns=['Complete', 'Complete_stable', 'Complete_stable1', 'Complete_stable2',
-                                                'Star', 'Star_stable', 'Star_stable1', 'Star_stable2',
-                                                'SW', 'SW_stable', 'SW_stable1', 'SW_stable2',
-                                                'ER', 'ER_stable', 'ER_stable1', 'ER_stable2',
-                                                'PA', 'PA_stable', 'PA_stable1', 'PA_stable2',
-                                                'L2', 'L2_stable', 'L2_stable1', 'L2_stable2'])
-    LPA_3_df = pd.DataFrame(LPA_3, columns=['Complete', 'Complete_stable', 'Complete_stable1', 'Complete_stable2',
-                                            'Star', 'Star_stable', 'Star_stable1', 'Star_stable2',
-                                            'SW', 'SW_stable', 'SW_stable1', 'SW_stable2',
-                                            'ER', 'ER_stable', 'ER_stable1', 'ER_stable2',
-                                            'PA', 'PA_stable', 'PA_stable1', 'PA_stable2',
-                                            'L2', 'L2_stable', 'L2_stable1', 'L2_stable2'])
+    voter_2_df = pd.DataFrame(voter_2, columns=['Complete_time', 'Complete_timeType', 'Complete_opinion1',
+                                                'Star_time', 'Star_timeType', 'Star_opinion1',
+                                                'SW_time', 'SW_timeType', 'SW_opinion1',
+                                                'ER_time', 'ER_timeType', 'ER_opinion1',
+                                                'PA_time', 'PA_timeType', 'PA_opinion1',
+                                                'L2_time', 'L2_timeType', 'L2_opinion1'])
+    LPA_2_df = pd.DataFrame(LPA_2, columns=['Complete_time', 'Complete_timeType', 'Complete_opinion1',
+                                                'Star_time', 'Star_timeType', 'Star_opinion1',
+                                                'SW_time', 'SW_timeType', 'SW_opinion1',
+                                                'ER_time', 'ER_timeType', 'ER_opinion1',
+                                                'PA_time', 'PA_timeType', 'PA_opinion1',
+                                                'L2_time', 'L2_timeType', 'L2_opinion1'])
+    voter_3_df = pd.DataFrame(voter_3, columns=['Complete_time', 'Complete_timeType', 'Complete_opinion1', 'Complete_opinion2',
+                                                'Star_time', 'Star_timeType', 'Star_opinion1', 'Star_opinion2',
+                                                'SW_time', 'SW_timeType', 'SW_opinion1', 'SW_opinion2',
+                                                'ER_time', 'ER_timeType', 'ER_opinion1', 'ER_opinion2',
+                                                'PA_time', 'PA_timeType', 'PA_opinion1', 'PA_opinion2',
+                                                'L2_time', 'L2_timeType', 'L2_opinion1', 'L2_opinion2'])
+    LPA_3_df = pd.DataFrame(LPA_3, columns=['Complete_time', 'Complete_timeType', 'Complete_opinion1', 'Complete_opinion2',
+                                                'Star_time', 'Star_timeType', 'Star_opinion1', 'Star_opinion2',
+                                                'SW_time', 'SW_timeType', 'SW_opinion1', 'SW_opinion2',
+                                                'ER_time', 'ER_timeType', 'ER_opinion1', 'ER_opinion2',
+                                                'PA_time', 'PA_timeType', 'PA_opinion1', 'PA_opinion2',
+                                                'L2_time', 'L2_timeType', 'L2_opinion1', 'L2_opinion2'])
     print(voter_2_df.head())
     print(LPA_2_df.head())
     print(voter_3_df.head())
@@ -360,4 +360,4 @@ def simulation(n, max_ite, max_time):
     LPA_3_df.to_csv('new_LPA_3_20.csv', index=False, header=True)
 
 
-# simulation(20, 1000, 500)
+simulation(20, 1000, 500)

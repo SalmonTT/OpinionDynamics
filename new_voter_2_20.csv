@@ -1,6 +1,6 @@
-Complete,Complete_stable,Complete_stable1,Star,Star_stable,Star_stable1,SW,SW_stable,SW_stable1,ER,ER_stable,ER_stable1,PA,PA_stable,PA_stable1,L2,L2_stable,L2_stable1
-232,0,20,51,1,18,157,1,17,70,0,0,33,0,20,287,0,0
-269,0,0,96,1,2,80,1,10,201,0,20,165,0,20,116,1,2
-126,0,20,66,0,0,203,1,15,97,0,20,283,0,20,272,1,1
-71,0,0,59,0,20,79,1,10,334,0,20,94,1,19,380,0,0
-87,0,0,42,0,0,287,1,16,293,0,0,185,0,0,130,1,11
+Complete_time,Complete_timeType,Complete_opinion1,Star_time,Star_timeType,Star_opinion1,SW_time,SW_timeType,SW_opinion1,ER_time,ER_timeType,ER_opinion1,PA_time,PA_timeType,PA_opinion1,L2_time,L2_timeType,L2_opinion1
+90,0,20,332,1,19,125,1,17,337,0,0,53,0,20,341,1,1
+289,0,20,46,0,0,317,1,9,471,0,20,111,0,0,231,1,1
+298,1,1,98,0,20,160,1,10,59,0,20,106,0,0,238,0,0
+87,1,1,150,1,2,269,1,17,138,0,20,346,0,0,574,1,18
+108,0,20,96,0,20,92,1,13,32,0,20,202,0,0,409,1,3
