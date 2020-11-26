@@ -5,7 +5,7 @@ import math
 import random
 import collections
 import matplotlib.pyplot as plt
-
+from time import process_time
 
 # build graph
 def completeGraph(no_node):
@@ -37,17 +37,17 @@ def randomSubset(repeated_nodes, no_edge):
 
 
 
-def barabasiAlbertGraph(no_node):
+def barabasiAlbertGraph(no_node, max_no_edge):
     G = nx.empty_graph(2)
     targets = list(range(2))
     repeated_nodes = []
     source = 2
-    no_edge = random.randint(1, 2)
-    while source < no_node:
-        G.add_edges_from(zip([source] * no_edge, targets))
+    no_edge = random.randint(1,2)
+    while source < no_node :
+        G.add_edges_from(zip([source]*no_edge, targets))
         repeated_nodes.extend(targets)
-        repeated_nodes.extend([source] * no_edge)
-        no_edge = random.randint(1, nx.number_of_nodes(G))
+        repeated_nodes.extend([source]*no_edge)
+        no_edge = random.randint(1, min(max_no_edge, nx.number_of_nodes(G)))
         targets = randomSubset(repeated_nodes, no_edge)
         source += 1
     return G
@@ -104,7 +104,7 @@ def reachConsensus(G):
 
 
 # Get current opinion's distribution
-def getCurrentOpinionN(G, print_opinion=True):
+def getCurrentOpinionN(G, print_opinion=False):
     opin = nx.get_node_attributes(G, 'opinion')
     opinion = {}
     for k, v in opin.items():
@@ -132,6 +132,7 @@ def setDistribution(G, no_opin):
 
 # Voter model
 def voterNOpinion(G, no_opin, max_iter, max_time):
+    start = process_time()
     getCurrentOpinionN(G)
     schedule = {}
     for node in G:
@@ -151,7 +152,7 @@ def voterNOpinion(G, no_opin, max_iter, max_time):
     update_count = 0
     stable_count = 0
     stable = {}
-    max_stable = G.number_of_nodes() * 1.5
+    max_stable = G.number_of_nodes() * 1.1
     for update in sorted_schedule.keys():
         for node in sorted_schedule[update]:
             if G.nodes[node]['stubborness'] != 1:
@@ -161,31 +162,40 @@ def voterNOpinion(G, no_opin, max_iter, max_time):
                 G.nodes[node]['opinion'] = G.nodes[selected_node]['opinion']
             current_opinion = getCurrentOpinionN(G, False)
             if reachConsensus(G):
-                print("After %d iterations, consensus reached" % update_count)
+                # print("After %d iterations, consensus reached" % update_count)
                 distribution = setDistribution(G, no_opin)
+                end = process_time()
+                print("time :", (end - start))
                 return update_count, 0, distribution
             if stable == current_opinion:
                 stable_count += 1
                 if stable_count > max_stable:
-                    print("After %d iterations, stable distributions reached" % update_count)
+                    # print("After %d iterations, stable distributions reached" % update_count)
                     distribution = setDistribution(G, no_opin)
+                    end = process_time()
+                    print("time :", (end - start))
                     return update_count, 1, distribution
             else:
                 stable = current_opinion.copy()
                 stable_count = 0
             update_count += 1
             if update_count >= max_iter:
-                print("MAX updates reaches")
+                # print("MAX updates reaches")
                 distribution = setDistribution(G, no_opin)
+                end = process_time()
+                print("time :", (end - start))
                 return update_count, 2, distribution
-    print("Process ends with %d iterations" % update_count)
+    # print("Process ends with %d iterations" % update_count)
     distribution = setDistribution(G, no_opin)
-    return update_count, 2, distribution
+    end = process_time()
+    print("time :", (end - start))
+    return update_count, 3, distribution
 
 
 
 # LPA
 def voterNOpinionLPA(G, no_opin, max_iter, max_time):
+    start = process_time()
     addNFeature(G, no_opin, 0)
     getCurrentOpinionN(G)
     schedule = {}
@@ -206,7 +216,7 @@ def voterNOpinionLPA(G, no_opin, max_iter, max_time):
     update_count = 0
     stable_count = 0
     stable = {}
-    max_stable = G.number_of_nodes() * 1.5
+    max_stable = G.number_of_nodes() * 1.1
     for update in sorted_schedule.keys():
         for node in sorted_schedule[update]:
             if G.nodes[node]['stubborness'] != 1:
@@ -219,31 +229,40 @@ def voterNOpinionLPA(G, no_opin, max_iter, max_time):
                 G.nodes[node]['opinion'] = neighbor_opinion.index(max(neighbor_opinion)) + 1
             current_opinion = getCurrentOpinionN(G, False)
             if reachConsensus(G):
-                print("After %d iterations, consensus reached" % update_count)
+                # print("After %d iterations, consensus reached" % update_count)
                 distribution = setDistribution(G, no_opin)
+                end = process_time()
+                print("time :", (end - start))
                 return update_count, 0, distribution
             if stable == current_opinion:
                 stable_count += 1
                 if stable_count > max_stable:
-                    print("After %d iterations, stable distributions reached" % update_count)
+                    # print("After %d iterations, stable distributions reached" % update_count)
                     distribution = setDistribution(G, no_opin)
+                    end = process_time()
+                    print("time :", (end - start))
                     return update_count, 1, distribution
             else:
                 stable = current_opinion.copy()
                 stable_count = 0
             update_count += 1
             if update_count >= max_iter:
-                print("MAX updates reaches")
+                # print("MAX updates reaches")
                 distribution = setDistribution(G, no_opin)
+                end = process_time()
+                print("time :", (end - start))
                 return update_count, 2, distribution
-    print("Process ends with %d iterations" % update_count)
+    # print("Process ends with %d iterations" % update_count)
     distribution = setDistribution(G, no_opin)
-    return update_count, 2, distribution
+    end = process_time()
+    print("time :", (end - start))
+    return update_count, 3, distribution
 
 
 
 # for no_of_nodes = (100,250,500,750,1000), run the following:
 def simulation(n, max_iter, max_time):
+    simulation_start = process_time()
     # Create four dataframes, timeType = 1 means it reaches stable distribution, 0 means it reaches consensus,
     # 2 means meet MAX iterations
     voter_2 = {'Complete_time': [], 'Complete_timeType': [], 'Complete_opinion1': [],
@@ -272,7 +291,8 @@ def simulation(n, max_iter, max_time):
                'L2_time': [], 'L2_timeType': [], 'L2_opinion1': [], 'L2_opinion2': []}
 
     # Run 100 times
-    for i in range(5):
+    for i in range(100):
+        print("iteration: %d" % i)
         # Create 6 graphs
         Complete = completeGraph(n)
         Star = starGraph(n - 1)
@@ -280,21 +300,22 @@ def simulation(n, max_iter, max_time):
         SW = smallWroldGraph(n, int(n / 10))
         ER = erdosRenyiGraph(n, 0.5)
         # Update it according to n
-        PA = barabasiAlbertGraph(n)
+        PA = barabasiAlbertGraph(n, 10)
         L2 = preferentialAttachment_2ndOrder(n, 0.5, False)
         graphs = [Complete, Star, SW, ER, PA, L2]
 
         # For these 6 graphs, apply voter models and LPA with binary opinions
         for graph in graphs:
             graph_name = [k for k, v in locals().items() if v == graph][0]
-            print(
-                "--------------------------This is graph " + graph_name + " with 2 opinions--------------------------")
+            print('iteration %d, binary voter, graph %s' % (i, graph_name))
+            # print(
+            #     "--------------------------This is graph " + graph_name + " with 2 opinions--------------------------")
             graph_copy1 = graph.copy()
             addNFeature(graph_copy1, 2, 0)
             graph_copy2 = graph_copy1.copy()
-            print("This is for voter model------------------------------")
+            # print("This is for voter model------------------------------")
             voter_ite_2, voter_2_stable, voter_2_distribution = voterNOpinion(graph_copy1, 2, max_iter, max_time)
-            print("This is for LPA------------------------------")
+            # print("This is for LPA------------------------------")
             LPA_ite_2, LPA_2_stable, LPA_2_distribution = voterNOpinionLPA(graph_copy2, 2, max_iter, max_time)
             # add to dataframe
             voter_2[graph_name + '_time'].append(voter_ite_2)
@@ -307,14 +328,15 @@ def simulation(n, max_iter, max_time):
         # For these 6 graphs, apply voter models and LPA with 3 opinions
         for graph in graphs:
             graph_name = [k for k, v in locals().items() if v == graph][0]
-            print(
-                "--------------------------This is graph " + graph_name + " with 3 opinions--------------------------")
+            print('iteration %d, 3-opinion voter, graph %s' % (i, graph_name))
+            # print(
+            #     "--------------------------This is graph " + graph_name + " with 3 opinions--------------------------")
             graph_copy3 = graph.copy()
             addNFeature(graph_copy3, 3, 0)
             graph_copy4 = graph_copy3.copy()
-            print("This is for voter model------------------------------")
+            # print("This is for voter model------------------------------")
             voter_ite_3, voter_3_stable, voter_3_distribution = voterNOpinion(graph_copy3, 2, max_iter, max_time)
-            print("This is for LPA------------------------------")
+            # print("This is for LPA------------------------------")
             LPA_ite_3, LPA_3_stable, LPA_3_distribution = voterNOpinionLPA(graph_copy4, 3, max_iter, max_time)
             # add to dataframe
             voter_3[graph_name + '_time'].append(voter_ite_3)
@@ -354,10 +376,39 @@ def simulation(n, max_iter, max_time):
     print(LPA_2_df.head())
     print(voter_3_df.head())
     print(LPA_3_df.head())
-    voter_2_df.to_csv('new_voter_2_20.csv', index=False, header=True)
-    LPA_2_df.to_csv('new_LPA_2_20.csv', index=False, header=True)
-    voter_3_df.to_csv('new_voter_3_20.csv', index=False, header=True)
-    LPA_3_df.to_csv('new_LPA_3_20.csv', index=False, header=True)
+    voter_2_df.to_csv('voter2_node100_maxIter14000_time1000.csv', index=False, header=True)
+    LPA_2_df.to_csv('LPA2_node100_maxIter14000_time1000.csv', index=False, header=True)
+    voter_3_df.to_csv('voter3_node100_maxIter14000_time1000.csv', index=False, header=True)
+    LPA_3_df.to_csv('LPA3_node100_maxIter14000_time1000.csv', index=False, header=True)
+    simulation_end = process_time()
 
+def testTime(n, max_iter, max_time):
+    Complete = completeGraph(n)
+    Star = starGraph(n - 1)
+    # Update it according to n
+    SW = smallWroldGraph(n, int(n / 10))
+    ER = erdosRenyiGraph(n, 0.5)
+    # Update it according to n
+    PA = barabasiAlbertGraph(n, 10)
+    L2 = preferentialAttachment_2ndOrder(n, 0.5, False)
+    graphs = [Complete, Star, SW, ER, PA, L2]
+    for graph in graphs:
+        graph_name = [k for k, v in locals().items() if v == graph][0]
+        graph_copy1 = graph.copy()
+        addNFeature(graph_copy1, 2, 0)
+        graph_copy2 = graph_copy1.copy()
+        voter_ite_2, voter_2_stable, voter_2_distribution = voterNOpinion(graph_copy1, 2, max_iter, max_time)
+        LPA_ite_2, LPA_2_stable, LPA_2_distribution = voterNOpinionLPA(graph_copy2, 2, max_iter, max_time)
+        print("%s binary opinion voter: iteration = %d - %d, type = %d - %d" % (graph_name, voter_ite_2, LPA_ite_2, voter_2_stable, LPA_2_stable))
 
-simulation(20, 1000, 500)
+        graph_copy3 = graph.copy()
+        addNFeature(graph_copy3, 3, 0)
+        graph_copy4 = graph_copy3.copy()
+        voter_ite_3, voter_3_stable, voter_3_distribution = voterNOpinion(graph_copy3, 2, max_iter, max_time)
+        LPA_ite_3, LPA_3_stable, LPA_3_distribution = voterNOpinionLPA(graph_copy4, 3, max_iter, max_time)
+        print("%s 3 opinion voter: iteration = %d - %d, type = %d - %d" % (
+        graph_name, voter_ite_3, LPA_ite_3, voter_3_stable, LPA_3_stable))
+
+testTime(250,24000, 1700)
+# simulation(100, 14000, 1000)
+# simulation(100, 14000, 1000)
