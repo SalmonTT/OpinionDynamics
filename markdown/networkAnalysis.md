@@ -91,6 +91,49 @@ The Watts-Strogatz model can be thought as a "pseudo-dynamic" model. In the cont
 The Watts-Strogatz model first begins with a ring lattice with $N$ nodes and $k$ edges per node. Once the ring lattice is established, the model randomly rewires each edge with probability $p$. When $p$ approaches 1, the construction moves towards that on an Erdos-Renyi-Gilbert model. As mentioned before, the Watts-Strogatz model is complex and well connected - short paths between individual nodes exists as a result of the rewiring process. Furthermore, this type of network is also highly clustered. (https://www.nature.com/articles/s41598-019-45576-3)
 
 #### Simulation:
+To simulate the Watts-Strogatz model, we again utilize the function *watts_strogatz_graph()* from Networkx. This time there are three parameters: number of nodes ($N$), $k$ and the probability $p$. These parameters are the same as the ones described above. $N$ is first fixed to 25 and we vary both $k$ and $p$. 
+
+$N = 25, k = 5, p = 0.5$
+> Nodes: 25. Edges: 50. Max_degree: 7
+> The top 5 degree centrality are [2, 10, 24, 5, 7]
+> The top ten closeness centrality are [24, 2, 11, 1, 4, 5, 10, 13, 9, 7]
+> The top ten betweenness centrality are [24, 2, 10, 7, 9, 5, 13, 11, 1, 20]
+> The top ten eigenvector centrality are [2, 24, 5, 10, 4, 11, 9, 1, 7, 19]
+> Average clustering coefficient of the graph: 0.256
+> Network density: 0.16666666666666666
+> Triadic closure: 0.2
+>
+> Graph             |  Degree Distribution
+> :-------------------------:|:-------------------------:
+> <img src="../graphs/SW/graph_25_5_0.5.PNG" width="500" />  | <img src="../graphs/SW/degree_graph_25_5_0.5.jpg" width="500" /> 
+
+$N = 25, k = 5, p = 1$
+> Nodes: 25. Edges: 50. Max_degree: 7
+> The top 5 degree centrality are [8, 12, 21, 24, 0]
+> The top ten closeness centrality are [12, 8, 21, 24, 11, 20, 10, 0, 2, 4]
+> The top ten betweenness centrality are [8, 12, 21, 24, 11, 0, 18, 19, 4, 20]
+> The top ten eigenvector centrality are [12, 8, 21, 24, 20, 3, 10, 11, 4, 15]
+> Average clustering coefficient of the graph: 0.104
+> Network density: 0.16666666666666666
+> Triadic closure: 0.10526315789473684
+>
+> Graph             |  Degree Distribution
+> :-------------------------:|:-------------------------:
+> <img src="../graphs/SW/graph_25_5_1.PNG" width="500" />  | <img src="../graphs/SW/degree_25_5_1.PNG" width="500" /> 
+
+$N = 25, k = 8, p = 0.5$
+> Nodes: 25. Edges: 100. Max_degree: 10
+> The top 5 degree centrality are [2, 10, 15, 17, 20]
+> The top ten closeness centrality are [2, 10, 15, 20, 21, 0, 3, 4, 14, 16]
+> The top ten betweenness centrality are [17, 3, 21, 20, 2, 15, 10, 16, 14, 23]
+> The top ten eigenvector centrality are [10, 15, 21, 2, 17, 0, 20, 4, 16, 14]
+> Average clustering coefficient of the graph: 0.328
+> Network density: 0.3333333333333333
+> Triadic closure: 0.3188010899182561
+>
+> Graph             |  Degree Distribution
+> :-------------------------:|:-------------------------:
+> <img src="../graphs/SW/graph_25_8_0.5.PNG" width="500" />  | <img src="../graphs/SW/degree_25_8_0.5.PNG" width="500" /> 
 
 
 ## Scale-free Model: Preferential Attachment Model
@@ -100,4 +143,49 @@ p_i = \frac{\delta_i}{\sum_j\delta_j}
 $$
 where $ \delta_j $ denotes the degree of node $i$. This mechanism allows for the emergence of Key Opinion Leaders (KOL) as the popular nodes becomes even more popular as network expands. 
 
+#### Simulation:
+In order to simulate the preferential attachment (PA) model, we explored two methods: first we used existing Networkx function to simulate the Barabasi Albert (BA hereafter) Graph, and then we implemented our own PA model based on its principles. For Networkx's BA function there are two parameters: 1) Number of nodes $N$ and 2) number of edges to attach from a new node to existing nodes $m$. We will set $N$ to be 25 and vary $m$ to see its behavior. For the PA function we implemented, there is only one parament $N$ which controls for the number of nodes. 
 
+These two methods will be compared below:
+
+BA: $N = 25, m = 5$
+>Nodes: 25. Edges: 61. Max_degree: 16
+>The top 5 degree centrality are [2, 7, 15, 3, 1]
+>The top ten closeness centrality are [2, 7, 15, 0, 3, 9, 1, 16, 11, 12]
+>The top ten betweenness centrality are [2, 15, 7, 3, 12, 11, 9, 0, 1, 20]
+>The top ten eigenvector centrality are [2, 7, 15, 1, 9, 16, 3, 18, 0, 12]
+>Average clustering coefficient of the graph: 0.425
+>Network density: 0.20333333333333334
+>Triadic closure: 0.2969543147208122
+>
+>Graph             |  Degree Distribution
+>:-------------------------:|:-------------------------:
+><img src="../graphs/BA/graph_25_5.PNG" width="500" />  | <img src="../graphs/BA/degree_25_5.PNG" width="500" /> 
+
+BA: $N = 25, m = 10$
+> Nodes: 25. Edges: 96. Max_degree: 16
+> The top 5 degree centrality are [5, 8, 12, 18, 0]
+> The top ten closeness centrality are [5, 8, 12, 18, 0, 20, 23, 1, 7, 9]
+> The top ten betweenness centrality are [5, 8, 9, 13, 12, 1, 2, 7, 0, 18]
+> The top ten eigenvector centrality are [5, 8, 18, 12, 20, 0, 16, 14, 7, 1]
+> Average clustering coefficient of the graph: 0.403
+> Network density: 0.32
+> Triadic closure: 0.4167709637046308
+>
+> Graph             |  Degree Distribution
+> :-------------------------:|:-------------------------:
+> <img src="../graphs/BA/graph_25_10.PNG" width="500" />  | <img src="../graphs/BA/degree_25_10.PNG" width="500" /> 
+
+PA: $N = 25$
+> Nodes: 25. Edges: 50. Max_degree: 9
+> The top 5 degree centrality are [0, 7, 1, 18, 21]
+> The top ten closeness centrality are [7, 0, 1, 10, 20, 18, 21, 2, 4, 5]
+> The top ten betweenness centrality are [7, 0, 18, 8, 1, 21, 5, 10, 4, 6]
+> The top ten eigenvector centrality are [0, 7, 1, 2, 4, 5, 12, 3, 18, 20]
+> Average clustering coefficient of the graph: 0.185
+> Network density: 0.16666666666666666
+> Triadic closure: 0.19597989949748743
+>
+> Graph             |  Degree Distribution
+> :-------------------------:|:-------------------------:
+> <img src="../graphs/PAV3/graph_25.PNG" width="500" />  | <img src="../graphs/PAV3/degree_25.PNG" width="500" /> 

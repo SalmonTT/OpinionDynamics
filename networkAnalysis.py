@@ -76,7 +76,7 @@ def degreeDistribution(G):
     plt.figure()
     plt.grid(True)
     plt.loglog(degrees[:], degree_freq[:], 'go-')
-    plt.title('ER Model')
+    plt.title('PA Model')
     plt.xlabel('Degree')
     plt.ylabel('Frequency')
     # plt.savefig('./degree_distribution.pdf')
