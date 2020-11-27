@@ -265,26 +265,30 @@ def simulation(n, max_iter, max_time):
     simulation_start = process_time()
     # Create four dataframes, timeType = 1 means it reaches stable distribution, 0 means it reaches consensus,
     # 2 means meet MAX iterations
-    voter_2 = {'Complete_time': [], 'Complete_timeType': [], 'Complete_opinion1': [],
-               'Star_time': [], 'Star_timeType': [], 'Star_opinion1': [],
+    voter_2 = {
+        # 'Complete_time': [], 'Complete_timeType': [], 'Complete_opinion1': [],
+        #        'Star_time': [], 'Star_timeType': [], 'Star_opinion1': [],
                'SW_time': [], 'SW_timeType': [], 'SW_opinion1': [],
                'ER_time': [], 'ER_timeType': [], 'ER_opinion1': [],
                'PA_time': [], 'PA_timeType': [], 'PA_opinion1': [],
                'L2_time': [], 'L2_timeType': [], 'L2_opinion1': []}
-    voter_3 = {'Complete_time': [], 'Complete_timeType': [], 'Complete_opinion1': [], 'Complete_opinion2': [],
-               'Star_time': [], 'Star_timeType': [], 'Star_opinion1': [], 'Star_opinion2': [],
+    voter_3 = {
+        # 'Complete_time': [], 'Complete_timeType': [], 'Complete_opinion1': [], 'Complete_opinion2': [],
+        #        'Star_time': [], 'Star_timeType': [], 'Star_opinion1': [], 'Star_opinion2': [],
                'SW_time': [], 'SW_timeType': [], 'SW_opinion1': [], 'SW_opinion2': [],
                'ER_time': [], 'ER_timeType': [], 'ER_opinion1': [], 'ER_opinion2': [],
                'PA_time': [], 'PA_timeType': [], 'PA_opinion1': [], 'PA_opinion2': [],
                'L2_time': [], 'L2_timeType': [], 'L2_opinion1': [], 'L2_opinion2': []}
-    LPA_2 = {'Complete_time': [], 'Complete_timeType': [], 'Complete_opinion1': [],
-               'Star_time': [], 'Star_timeType': [], 'Star_opinion1': [],
+    LPA_2 = {
+        # 'Complete_time': [], 'Complete_timeType': [], 'Complete_opinion1': [],
+        #        'Star_time': [], 'Star_timeType': [], 'Star_opinion1': [],
                'SW_time': [], 'SW_timeType': [], 'SW_opinion1': [],
                'ER_time': [], 'ER_timeType': [], 'ER_opinion1': [],
                'PA_time': [], 'PA_timeType': [], 'PA_opinion1': [],
                'L2_time': [], 'L2_timeType': [], 'L2_opinion1': []}
-    LPA_3 = {'Complete_time': [], 'Complete_timeType': [], 'Complete_opinion1': [], 'Complete_opinion2': [],
-               'Star_time': [], 'Star_timeType': [], 'Star_opinion1': [], 'Star_opinion2': [],
+    LPA_3 = {
+        # 'Complete_time': [], 'Complete_timeType': [], 'Complete_opinion1': [], 'Complete_opinion2': [],
+        #        'Star_time': [], 'Star_timeType': [], 'Star_opinion1': [], 'Star_opinion2': [],
                'SW_time': [], 'SW_timeType': [], 'SW_opinion1': [], 'SW_opinion2': [],
                'ER_time': [], 'ER_timeType': [], 'ER_opinion1': [], 'ER_opinion2': [],
                'PA_time': [], 'PA_timeType': [], 'PA_opinion1': [], 'PA_opinion2': [],
@@ -294,15 +298,16 @@ def simulation(n, max_iter, max_time):
     for i in range(100):
         print("iteration: %d" % i)
         # Create 6 graphs
-        Complete = completeGraph(n)
-        Star = starGraph(n - 1)
+        # Complete = completeGraph(n)
+        # Star = starGraph(n - 1)
         # Update it according to n
         SW = smallWroldGraph(n, int(n / 10))
         ER = erdosRenyiGraph(n, 0.5)
         # Update it according to n
         PA = barabasiAlbertGraph(n, 10)
         L2 = preferentialAttachment_2ndOrder(n, 0.5, False)
-        graphs = [Complete, Star, SW, ER, PA, L2]
+        # graphs = [Complete, Star, SW, ER, PA, L2]
+        graphs = [SW, ER, PA, L2]
 
         # For these 6 graphs, apply voter models and LPA with binary opinions
         for graph in graphs:
@@ -335,7 +340,7 @@ def simulation(n, max_iter, max_time):
             addNFeature(graph_copy3, 3, 0)
             graph_copy4 = graph_copy3.copy()
             # print("This is for voter model------------------------------")
-            voter_ite_3, voter_3_stable, voter_3_distribution = voterNOpinion(graph_copy3, 2, max_iter, max_time)
+            voter_ite_3, voter_3_stable, voter_3_distribution = voterNOpinion(graph_copy3, 3, max_iter, max_time)
             # print("This is for LPA------------------------------")
             LPA_ite_3, LPA_3_stable, LPA_3_distribution = voterNOpinionLPA(graph_copy4, 3, max_iter, max_time)
             # add to dataframe
@@ -348,26 +353,30 @@ def simulation(n, max_iter, max_time):
             LPA_3[graph_name + '_opinion1'].append(LPA_3_distribution.get(1))
             LPA_3[graph_name + '_opinion2'].append(LPA_3_distribution.get(2))
 
-    voter_2_df = pd.DataFrame(voter_2, columns=['Complete_time', 'Complete_timeType', 'Complete_opinion1',
-                                                'Star_time', 'Star_timeType', 'Star_opinion1',
+    voter_2_df = pd.DataFrame(voter_2, columns=[
+        # 'Complete_time', 'Complete_timeType', 'Complete_opinion1',
+        #                                         'Star_time', 'Star_timeType', 'Star_opinion1',
                                                 'SW_time', 'SW_timeType', 'SW_opinion1',
                                                 'ER_time', 'ER_timeType', 'ER_opinion1',
                                                 'PA_time', 'PA_timeType', 'PA_opinion1',
                                                 'L2_time', 'L2_timeType', 'L2_opinion1'])
-    LPA_2_df = pd.DataFrame(LPA_2, columns=['Complete_time', 'Complete_timeType', 'Complete_opinion1',
-                                                'Star_time', 'Star_timeType', 'Star_opinion1',
+    LPA_2_df = pd.DataFrame(LPA_2, columns=[
+        # ‘Complete_time', 'Complete_timeType', 'Complete_opinion1',
+        #                                         'Star_time', 'Star_timeType', 'Star_opinion1',
                                                 'SW_time', 'SW_timeType', 'SW_opinion1',
                                                 'ER_time', 'ER_timeType', 'ER_opinion1',
                                                 'PA_time', 'PA_timeType', 'PA_opinion1',
                                                 'L2_time', 'L2_timeType', 'L2_opinion1'])
-    voter_3_df = pd.DataFrame(voter_3, columns=['Complete_time', 'Complete_timeType', 'Complete_opinion1', 'Complete_opinion2',
-                                                'Star_time', 'Star_timeType', 'Star_opinion1', 'Star_opinion2',
+    voter_3_df = pd.DataFrame(voter_3, columns=[
+        # 'Complete_time', 'Complete_timeType', 'Complete_opinion1', 'Complete_opinion2',
+        #                                         'Star_time', 'Star_timeType', 'Star_opinion1', 'Star_opinion2',
                                                 'SW_time', 'SW_timeType', 'SW_opinion1', 'SW_opinion2',
                                                 'ER_time', 'ER_timeType', 'ER_opinion1', 'ER_opinion2',
                                                 'PA_time', 'PA_timeType', 'PA_opinion1', 'PA_opinion2',
                                                 'L2_time', 'L2_timeType', 'L2_opinion1', 'L2_opinion2'])
-    LPA_3_df = pd.DataFrame(LPA_3, columns=['Complete_time', 'Complete_timeType', 'Complete_opinion1', 'Complete_opinion2',
-                                                'Star_time', 'Star_timeType', 'Star_opinion1', 'Star_opinion2',
+    LPA_3_df = pd.DataFrame(LPA_3, columns=[
+        # 'Complete_time', 'Complete_timeType', 'Complete_opinion1', 'Complete_opinion2',
+        #                                         'Star_time', 'Star_timeType', 'Star_opinion1', 'Star_opinion2',
                                                 'SW_time', 'SW_timeType', 'SW_opinion1', 'SW_opinion2',
                                                 'ER_time', 'ER_timeType', 'ER_opinion1', 'ER_opinion2',
                                                 'PA_time', 'PA_timeType', 'PA_opinion1', 'PA_opinion2',
@@ -409,6 +418,6 @@ def testTime(n, max_iter, max_time):
         print("%s 3 opinion voter: iteration = %d - %d, type = %d - %d" % (
         graph_name, voter_ite_3, LPA_ite_3, voter_3_stable, LPA_3_stable))
 
-testTime(250,24000, 1700)
+# testTime(250,24000, 1700)
 # simulation(100, 14000, 1000)
 # simulation(100, 14000, 1000)
