@@ -34,7 +34,13 @@ def barabasiAlbertGraph(no_node, max_no_edge, seed=None):
     # plotGraph(G)
     return G
 
-# barabasiAlbertGraph(80, 3, seed=None)
+sw = smallWroldGraph(30, 7)
+ba = barabasiAlbertGraph(30, 5)
+networkAnalysis(sw)
+plotGraph(sw)
+networkAnalysis(ba)
+plotGraph(ba)
+
 
 def preferentialAttachment_2ndOrder(max_nodes, c=1.0, loner=False):
     G = nx.Graph()
