@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import json
 import pandas as pd
 import numpy as np
+import community as community_louvain
 
 # G = some networkx graph
 
@@ -12,7 +13,7 @@ def networkAnalysis(G):
     basicInfo(G)
     degreeHistogram(G)
     degreeDistribution(G)
-    # clusteringCoefficient(G)
+    clusteringCoefficient(G)
 
 def get_top_keys(dictionary, top):
     items = sorted(dictionary.items(), reverse=True, key=lambda x: x[1])
@@ -25,36 +26,35 @@ def basicInfo(G):
     print("Nodes: %d. Edges: %d. Max_degree: %d" % (n, e, dmax))
 
     # Degree Centrality of a node refers to the number of edges attached to the node.
-    # # The degree centrality values are normalized by dividing by the maximum possible
-    # # degree in a simple graph n-1 where n is the number of nodes in G.
-    # degree_cen = nx.degree_centrality(G)
-    # top_degree_cen = get_top_keys(degree_cen, 10)
-    # print("The top ten degree centrality are", list(top_degree_cen))
-    #
-    # # Closeness centrality of a node u is the reciprocal of the average shortest path
-    # # distance to u over all n-1 reachable nodes.
-    # #                          n - 1
-    # # Defined as C(u) = ----------------------
-    # #                    Σv=1->(n-1)  d(v,u)
-    # close_cen = nx.closeness_centrality(G)
-    # top_close_cen = get_top_keys(close_cen, 10)
-    # # print(json.dumps(close_cen, indent=4))
-    # print("The top ten closeness centrality are", list(top_close_cen))
-    #
-    # # Betweenness centrality of a node v is the sum of the fraction of all-pairs shortest paths that pass through v
-    # between_cen = nx.betweenness_centrality(G)
-    # top_between_cen = get_top_keys(between_cen,10)
-    # # print(json.dumps(between_cen, indent=4))
-    # print("The top ten betweenness centrality are", list(top_between_cen))
-    #
-    # # Eigenvector Centrality measures the importance of a node in a graph as a function of the
-    # # importance of its neighbors.
-    # # If a node is connected to highly important nodes, it will have a higher Eigen Vector
-    # # Centrality score as compared to a node which is connected to lesser important nodes.
-    # eigen_cen = nx.eigenvector_centrality(G)
-    # top_eigen_cen = get_top_keys(eigen_cen, 10)
-    # # print(json.dumps(eigen_cen, indent=4))
-    # print("The top ten eigenvector centrality are", list(top_eigen_cen))
+    # The degree centrality values are normalized by dividing by the maximum possible
+    # degree in a simple graph n-1 where n is the number of nodes in G.
+    degree_cen = nx.degree_centrality(G)
+    top_degree_cen = get_top_keys(degree_cen, 5)
+    print("The top 5 degree centrality are", list(top_degree_cen))
+    # Closeness centrality of a node u is the reciprocal of the average shortest path
+    # distance to u over all n-1 reachable nodes.
+    #                          n - 1
+    # Defined as C(u) = ----------------------
+    #                    Σv=1->(n-1)  d(v,u)
+    close_cen = nx.closeness_centrality(G)
+    top_close_cen = get_top_keys(close_cen, 10)
+    # print(json.dumps(close_cen, indent=4))
+    print("The top ten closeness centrality are", list(top_close_cen))
+
+    # Betweenness centrality of a node v is the sum of the fraction of all-pairs shortest paths that pass through v
+    between_cen = nx.betweenness_centrality(G)
+    top_between_cen = get_top_keys(between_cen,10)
+    # print(json.dumps(between_cen, indent=4))
+    print("The top ten betweenness centrality are", list(top_between_cen))
+
+    # Eigenvector Centrality measures the importance of a node in a graph as a function of the
+    # importance of its neighbors.
+    # If a node is connected to highly important nodes, it will have a higher Eigen Vector
+    # Centrality score as compared to a node which is connected to lesser important nodes.
+    eigen_cen = nx.eigenvector_centrality(G)
+    top_eigen_cen = get_top_keys(eigen_cen, 10)
+    # print(json.dumps(eigen_cen, indent=4))
+    print("The top ten eigenvector centrality are", list(top_eigen_cen))
 
 
 def degreeHistogram(G):
@@ -76,7 +76,7 @@ def degreeDistribution(G):
     plt.figure()
     plt.grid(True)
     plt.loglog(degrees[:], degree_freq[:], 'go-')
-    plt.title('Social Network')
+    plt.title('ER Model')
     plt.xlabel('Degree')
     plt.ylabel('Frequency')
     # plt.savefig('./degree_distribution.pdf')
@@ -85,14 +85,33 @@ def degreeDistribution(G):
 def clusteringCoefficient(G):
     # Clustering coefficient of all nodes (in a dictionary)
     clust_coefficients = nx.clustering(G)
+    # print("Cluster coefficients: ", clust_coefficients)
     ave_clust = nx.average_clustering(G)
-    print("Average clustering coefficient of the graph: %d" % ave_clust)
+    print("Average clustering coefficient of the graph: %.3f" % ave_clust)
 
+def communityANalysis(G):
+    partition = community_louvain.best_partition(G)
+    size = float(len(set(partition.values())))
+    pos = nx.spring_layout(G)
+    count = 0.
+    for com in set(partition.values()):
+        count += 1.
+        list_nodes = [nodes for nodes in partition.keys()
+                       if partition[nodes] == com]
+        nx.draw_networkx_nodes(G, pos, list_nodes, node_size=20,
+                                node_color=str(count / size))
+    nx.draw_networkx_edges(G, pos, alpha=0.5)
+    plt.show()
 def fullAnalysis(G):
     basicInfo(G)
     degreeHistogram(G)
     degreeDistribution(G)
     clusteringCoefficient(G)
+    density = nx.density(G)
+    print("Network density:", density)
+    triadic_closure = nx.transitivity(G)
+    print("Triadic closure:", triadic_closure)
+    communityANalysis(G)
     return
 
 def csvAnalysis(filename):
