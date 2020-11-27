@@ -308,10 +308,6 @@ def simulation(n, max_iter, max_time):
         L2 = preferentialAttachment_2ndOrder(n, 1, False)
         # graphs = [Complete, Star, SW, ER, PA, L2]
         graphs = [SW, ER, PA, L2]
-        PA = barabasiAlbertGraph(n, 10)
-        L2 = preferentialAttachment_2ndOrder(n, 0.5, False)
-        # graphs = [Complete, Star, SW, ER, PA, L2]
-        graphs = [SW, ER, PA, L2]
 
         # For these 6 graphs, apply voter models and LPA with binary opinions
         for graph in graphs:
@@ -367,7 +363,6 @@ def simulation(n, max_iter, max_time):
     LPA_2_df = pd.DataFrame(LPA_2, columns=[
 
         # 'Complete_time', 'Complete_timeType', 'Complete_opinion1',
-        # ‘Complete_time', 'Complete_timeType', 'Complete_opinion1',
         #                                         'Star_time', 'Star_timeType', 'Star_opinion1',
                                                 'SW_time', 'SW_timeType', 'SW_opinion1',
                                                 'ER_time', 'ER_timeType', 'ER_opinion1',
@@ -427,10 +422,5 @@ def testTime(n, max_iter, max_time):
         print("%s 3 opinion voter: iteration = %d - %d, type = %d - %d" % (
         graph_name, voter_ite_3, LPA_ite_3, voter_3_stable, LPA_3_stable))
 
-# testTime(100,24000, 1700)
-# simulation(100, 14000, 1000)
-# testTime(250,24000, 1700)
-# simulation(100, 14000, 1000)
-# simulation(250, 10000, 500)
-# simulation(500, 10000, 500)
-simulation(750, 10000, 500)
+
+# simulation(750, 10000, 500)
