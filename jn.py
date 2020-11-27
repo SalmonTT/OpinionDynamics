@@ -152,7 +152,7 @@ def voterNOpinion(G, no_opin, max_iter, max_time):
     update_count = 0
     stable_count = 0
     stable = {}
-    max_stable = G.number_of_nodes() * 1.1
+    max_stable = G.number_of_nodes() * 0.7
     for update in sorted_schedule.keys():
         for node in sorted_schedule[update]:
             if G.nodes[node]['stubborness'] != 1:
@@ -216,7 +216,7 @@ def voterNOpinionLPA(G, no_opin, max_iter, max_time):
     update_count = 0
     stable_count = 0
     stable = {}
-    max_stable = G.number_of_nodes() * 1.1
+    max_stable = G.number_of_nodes() * 1.2
     for update in sorted_schedule.keys():
         for node in sorted_schedule[update]:
             if G.nodes[node]['stubborness'] != 1:
@@ -301,9 +301,13 @@ def simulation(n, max_iter, max_time):
         # Complete = completeGraph(n)
         # Star = starGraph(n - 1)
         # Update it according to n
-        SW = smallWroldGraph(n, int(n / 10))
-        ER = erdosRenyiGraph(n, 0.5)
+        SW = smallWroldGraph(n, 50)
+        ER = erdosRenyiGraph(n, 0.05)
         # Update it according to n
+        PA = barabasiAlbertGraph(n, 30)
+        L2 = preferentialAttachment_2ndOrder(n, 1, False)
+        # graphs = [Complete, Star, SW, ER, PA, L2]
+        graphs = [SW, ER, PA, L2]
         PA = barabasiAlbertGraph(n, 10)
         L2 = preferentialAttachment_2ndOrder(n, 0.5, False)
         # graphs = [Complete, Star, SW, ER, PA, L2]
@@ -361,6 +365,8 @@ def simulation(n, max_iter, max_time):
                                                 'PA_time', 'PA_timeType', 'PA_opinion1',
                                                 'L2_time', 'L2_timeType', 'L2_opinion1'])
     LPA_2_df = pd.DataFrame(LPA_2, columns=[
+
+        # 'Complete_time', 'Complete_timeType', 'Complete_opinion1',
         # ‘Complete_time', 'Complete_timeType', 'Complete_opinion1',
         #                                         'Star_time', 'Star_timeType', 'Star_opinion1',
                                                 'SW_time', 'SW_timeType', 'SW_opinion1',
@@ -370,6 +376,8 @@ def simulation(n, max_iter, max_time):
     voter_3_df = pd.DataFrame(voter_3, columns=[
         # 'Complete_time', 'Complete_timeType', 'Complete_opinion1', 'Complete_opinion2',
         #                                         'Star_time', 'Star_timeType', 'Star_opinion1', 'Star_opinion2',
+#                                         'SW_time', 'SW_timeType', 'SW_opinion1', 'SW_opinion2',
+
                                                 'SW_time', 'SW_timeType', 'SW_opinion1', 'SW_opinion2',
                                                 'ER_time', 'ER_timeType', 'ER_opinion1', 'ER_opinion2',
                                                 'PA_time', 'PA_timeType', 'PA_opinion1', 'PA_opinion2',
@@ -385,11 +393,12 @@ def simulation(n, max_iter, max_time):
     print(LPA_2_df.head())
     print(voter_3_df.head())
     print(LPA_3_df.head())
-    voter_2_df.to_csv('voter2_node100_maxIter14000_time1000.csv', index=False, header=True)
-    LPA_2_df.to_csv('LPA2_node100_maxIter14000_time1000.csv', index=False, header=True)
-    voter_3_df.to_csv('voter3_node100_maxIter14000_time1000.csv', index=False, header=True)
-    LPA_3_df.to_csv('LPA3_node100_maxIter14000_time1000.csv', index=False, header=True)
+    voter_2_df.to_csv('voter2_node500.csv', index=False, header=True)
+    LPA_2_df.to_csv('LPA2_node500.csv', index=False, header=True)
+    voter_3_df.to_csv('voter3_node500.csv', index=False, header=True)
+    LPA_3_df.to_csv('LPA3_node500.csv', index=False, header=True)
     simulation_end = process_time()
+    print("simulation time: ", simulation_end-simulation_start)
 
 def testTime(n, max_iter, max_time):
     Complete = completeGraph(n)
@@ -413,11 +422,15 @@ def testTime(n, max_iter, max_time):
         graph_copy3 = graph.copy()
         addNFeature(graph_copy3, 3, 0)
         graph_copy4 = graph_copy3.copy()
-        voter_ite_3, voter_3_stable, voter_3_distribution = voterNOpinion(graph_copy3, 2, max_iter, max_time)
+        voter_ite_3, voter_3_stable, voter_3_distribution = voterNOpinion(graph_copy3, 3, max_iter, max_time)
         LPA_ite_3, LPA_3_stable, LPA_3_distribution = voterNOpinionLPA(graph_copy4, 3, max_iter, max_time)
         print("%s 3 opinion voter: iteration = %d - %d, type = %d - %d" % (
         graph_name, voter_ite_3, LPA_ite_3, voter_3_stable, LPA_3_stable))
 
+# testTime(100,24000, 1700)
+# simulation(100, 14000, 1000)
 # testTime(250,24000, 1700)
 # simulation(100, 14000, 1000)
-# simulation(100, 14000, 1000)
+# simulation(250, 10000, 500)
+# simulation(500, 10000, 500)
+simulation(750, 10000, 500)
