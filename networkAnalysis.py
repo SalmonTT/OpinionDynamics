@@ -9,8 +9,8 @@ import numpy as np
 # G = some networkx graph
 
 def networkAnalysis(G):
-    # basicInfo(G)
-    # degreeHistogram(G)
+    basicInfo(G)
+    degreeHistogram(G)
     degreeDistribution(G)
     # clusteringCoefficient(G)
 
@@ -25,36 +25,36 @@ def basicInfo(G):
     print("Nodes: %d. Edges: %d. Max_degree: %d" % (n, e, dmax))
 
     # Degree Centrality of a node refers to the number of edges attached to the node.
-    # The degree centrality values are normalized by dividing by the maximum possible
-    # degree in a simple graph n-1 where n is the number of nodes in G.
-    degree_cen = nx.degree_centrality(G)
-    top_degree_cen = get_top_keys(degree_cen, 10)
-    print("The top ten degree centrality are", list(top_degree_cen))
-
-    # Closeness centrality of a node u is the reciprocal of the average shortest path
-    # distance to u over all n-1 reachable nodes.
-    #                          n - 1
-    # Defined as C(u) = ----------------------
-    #                    Σv=1->(n-1)  d(v,u)
-    close_cen = nx.closeness_centrality(G)
-    top_close_cen = get_top_keys(close_cen, 10)
-    # print(json.dumps(close_cen, indent=4))
-    print("The top ten closeness centrality are", list(top_close_cen))
-
-    # Betweenness centrality of a node v is the sum of the fraction of all-pairs shortest paths that pass through v
-    between_cen = nx.betweenness_centrality(G)
-    top_between_cen = get_top_keys(between_cen,10)
-    # print(json.dumps(between_cen, indent=4))
-    print("The top ten betweenness centrality are", list(top_between_cen))
-
-    # Eigenvector Centrality measures the importance of a node in a graph as a function of the
-    # importance of its neighbors.
-    # If a node is connected to highly important nodes, it will have a higher Eigen Vector
-    # Centrality score as compared to a node which is connected to lesser important nodes.
-    eigen_cen = nx.eigenvector_centrality(G)
-    top_eigen_cen = get_top_keys(eigen_cen, 10)
-    # print(json.dumps(eigen_cen, indent=4))
-    print("The top ten eigenvector centrality are", list(top_eigen_cen))
+    # # The degree centrality values are normalized by dividing by the maximum possible
+    # # degree in a simple graph n-1 where n is the number of nodes in G.
+    # degree_cen = nx.degree_centrality(G)
+    # top_degree_cen = get_top_keys(degree_cen, 10)
+    # print("The top ten degree centrality are", list(top_degree_cen))
+    #
+    # # Closeness centrality of a node u is the reciprocal of the average shortest path
+    # # distance to u over all n-1 reachable nodes.
+    # #                          n - 1
+    # # Defined as C(u) = ----------------------
+    # #                    Σv=1->(n-1)  d(v,u)
+    # close_cen = nx.closeness_centrality(G)
+    # top_close_cen = get_top_keys(close_cen, 10)
+    # # print(json.dumps(close_cen, indent=4))
+    # print("The top ten closeness centrality are", list(top_close_cen))
+    #
+    # # Betweenness centrality of a node v is the sum of the fraction of all-pairs shortest paths that pass through v
+    # between_cen = nx.betweenness_centrality(G)
+    # top_between_cen = get_top_keys(between_cen,10)
+    # # print(json.dumps(between_cen, indent=4))
+    # print("The top ten betweenness centrality are", list(top_between_cen))
+    #
+    # # Eigenvector Centrality measures the importance of a node in a graph as a function of the
+    # # importance of its neighbors.
+    # # If a node is connected to highly important nodes, it will have a higher Eigen Vector
+    # # Centrality score as compared to a node which is connected to lesser important nodes.
+    # eigen_cen = nx.eigenvector_centrality(G)
+    # top_eigen_cen = get_top_keys(eigen_cen, 10)
+    # # print(json.dumps(eigen_cen, indent=4))
+    # print("The top ten eigenvector centrality are", list(top_eigen_cen))
 
 
 def degreeHistogram(G):
@@ -97,27 +97,47 @@ def fullAnalysis(G):
 
 def csvAnalysis(filename):
     df = pd.read_csv(filename)
-    # df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
-    # pd.concat([df, pd.DataFrame(columns = ['cycle','line'])])
-    # df[['cycle','line']]=[20000,20000]
-    # df = df[['complete', 'star', 'cycle', 'line', 'er', 'pa', 'pa2']]
-    # df.to_csv(filename, index=False, header=True)
-    # print(df.head())
     pd.set_option('display.expand_frame_repr', False)
-    print(df.describe(include='all'))
-    top_10 = pd.DataFrame()
-    last_10 = pd.DataFrame()
-    for graph in list(df.columns):
-        max = df.sort_values(graph, ascending=False).head(10)
-        top_10[graph] = max[graph].tolist()
-        min = df.sort_values(graph, ascending=True).head(10)
-        last_10[graph] = min[graph].tolist()
-    print("The top ten are: ")
-    print(top_10)
-    print("the min ten are: ")
-    print(last_10)
-    df.hist(figsize=(20, 20))
-    plt.show()
+
+    # # analyze the convergence time
+    # print("The summary of convergence time of graphs: ")
+    # # find the mean, std, min, 25%, 50%, 75%, max
+    # print(df[['Complete_time','Star_time', 'SW_time', 'ER_time', 'PA_time', 'L2_time']].describe())
+    # # find the top 10 and last 10 in convergence time
+    # top_10 = pd.DataFrame()
+    # last_10 = pd.DataFrame()
+    # for graph in 'Complete_time','Star_time', 'SW_time', 'ER_time', 'PA_time', 'L2_time':
+    #     max = df.sort_values(graph, ascending=False).head(10)
+    #     top_10[graph] = max[graph].tolist()
+    #     min = df.sort_values(graph, ascending=True).head(10)
+    #     last_10[graph] = min[graph].tolist()
+    # print("The top ten are: ")
+    # print(top_10)
+    # print("the min ten are: ")
+    # print(last_10)
+
+    # distribution of convergence time type
+    # print("The SW converge type distribution is ")
+    # print(df['SW_timeType'].value_counts())
+    # print("The ER converge type distribution is ")
+    # print(df['ER_timeType'].value_counts())
+    # print("The PA converge type distribution is ")
+    # print(df['PA_timeType'].value_counts())
+    # print("The L2 converge type distribution is ")
+    # print(df['L2_timeType'].value_counts())
+
+    # check the distribution of those reach stable distribution
+    graphs = ['SW', 'ER', 'PA', 'L2']
+    for graph in graphs:
+        subgraph = df.loc[df[(graph+'_timeType')] == 1, (graph+'_opinion1')]
+        # result = sum(1 for x in subgraph[2] if x>10 and x<90)
+        print(subgraph)
+
+
+    # df.hist(figsize=(20, 20))
+    # plt.show()
+
+# csvAnalysis(r'simulation result/LPA2_node100.csv')
 
 def csvA(filename):
     df = pd.read_csv(filename)
@@ -127,7 +147,8 @@ def csvA(filename):
     top_10 = pd.DataFrame()
     last_10 = pd.DataFrame()
     # print(df.head(10))
-    for graph in list(df.columns):
+
+    for graph in  list(df.columns):
         max = df.sort_values(graph, ascending=False).head(10)
         top_10[graph] = max[graph].tolist()
         min = df.sort_values(graph, ascending=True).head(10)
@@ -136,7 +157,7 @@ def csvA(filename):
     print(top_10)
     print("the min ten are: ")
     print(last_10)
-    df.hist(figsize=(20, 20))
-    plt.show()
+    # df.hist(figsize=(20, 20))
+    # plt.show()
 
 # csvA('voter_3_10.csv')
