@@ -85,7 +85,7 @@ if not loner & (G.degree[i] == 0):
 
 The result from this method is shown below:
 
-![random.choice() method](../graphs/PAv1_graph1.PNG)
+![random.choice() method](../Degree/graphs/PAv1_graph1.PNG)
 
 The highlighted node in the middle is $node_0$ , and as you can see its degree isn't very different from other nodes (the size of the node represents its relative degree).
 
@@ -97,7 +97,7 @@ if not loner & (G.degree[i] == 0):
     G.add_edge(rand_node, i)
 ```
 
-![Most connected node](../graphs/PAv1_graph2.PNG)
+![Most connected node](../Degree/graphs/PAv1_graph2.PNG)
 
 The highlighted node is $node_0$ and its degree is significantly higher than other nodes. 
 
@@ -112,7 +112,7 @@ while(G.degree[i] == 0):
             G.add_edge(j, i)
 ```
 
-![repeat part 1.2](../graphs/PAv1_graph3.PNG)
+![repeat part 1.2](../Degree/graphs/PAv1_graph3.PNG)
 
 Note that the result from this method is similar to that of random.choice()
 
@@ -142,7 +142,7 @@ preferentialAttachmentV2(100, loner=False, max_p=0.2)
 
 The above function generated the following:
 
-![max_p = 0.2](../graphs/PAv2_graph1.PNG)
+![max_p = 0.2](../Degree/graphs/PAv2_graph1.PNG)
 
 ## preferentialAttachmentV3() 
 In this version we focus on methods to tweak $p_i$. As a result of the formula : $p_i = \frac{k_i}{\sum_j k_j}$, we found that $p_i$ is quite small for most nodes except for the initial few. Nevertheless, we did not find a suitable function for $p_i$ yet. Ideally we would like to find a function that ranges between 0 and 1 and exhibits exponential properties. 
@@ -167,7 +167,7 @@ The function $f(x) = 1 - (\frac{1}{x + 1})$ exhibits the following features:
 
 We believe this change will increase the number of KOLs in the network as it boosts $p_i$ for more connected nodes:
 
-![boosted pi](../graphs/PAv3_graph1.PNG)
+![boosted pi](../Degree/graphs/PAv3_graph1.PNG)
 
 ## preferentialAttachment_2ndOrder()
 
