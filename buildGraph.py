@@ -2,7 +2,7 @@ import random
 import numpy as np
 import networkx as nx
 from plotGraph import plotGraph
-from networkAnalysis import networkAnalysis
+from networkAnalysis import networkAnalysis, fullAnalysis
 from PA import randomSubset
 
 def completeGraph(no_node):
@@ -34,14 +34,6 @@ def barabasiAlbertGraph(no_node, max_no_edge, seed=None):
     # plotGraph(G)
     return G
 
-sw = smallWroldGraph(30, 7)
-ba = barabasiAlbertGraph(30, 5)
-networkAnalysis(sw)
-plotGraph(sw)
-networkAnalysis(ba)
-plotGraph(ba)
-
-
 def preferentialAttachment_2ndOrder(max_nodes, c=1.0, loner=False):
     G = nx.Graph()
     G.add_nodes_from([0, 1])
@@ -67,4 +59,37 @@ def preferentialAttachment_2ndOrder(max_nodes, c=1.0, loner=False):
     # plotGraph(G)
     return G
 
-# preferentialAttachment_2ndOrder(80, c=0.5)
+def preferentialAttachmentV3(max_nodes, loner=False):
+    G = nx.Graph()
+    G.add_nodes_from([0, 1])
+    G.add_edge(0, 1)
+    # ----- Part 1 -----
+    for i in range(2, max_nodes):
+        # ----- Part 1.1 -----
+        node_list = sorted(node for (node, val) in sorted(G.degree, key=lambda x: x[1], reverse=True))
+        G.add_node(i)
+        # ----- Part 1.2 -----
+        count = max_nodes
+        for j in node_list:
+            p = G.degree(j) / (2 * G.number_of_edges())
+            p = p + p * (1 - (1/(count+1)))
+            if random.random() <= p:
+                G.add_edge(j, i)
+            count -= 1
+        # ----- Part 1.3 -----
+        if not loner & (G.degree(i) == 0):
+            rand_node = node_list[random.choice(node_list)]
+            G.add_edge(rand_node, i)
+
+    return G
+
+pa = preferentialAttachment_2ndOrder(80, c=0.5)
+
+sw = smallWroldGraph(25, 5)
+ba = barabasiAlbertGraph(25, 10)
+er = erdosRenyiGraph(25, 0.1)
+pa = preferentialAttachmentV3(25)
+
+# Analysis
+fullAnalysis(sw)
+plotGraph(sw)

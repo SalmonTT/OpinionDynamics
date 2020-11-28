@@ -295,16 +295,16 @@ def simulation(n, max_iter, max_time):
                'L2_time': [], 'L2_timeType': [], 'L2_opinion1': [], 'L2_opinion2': []}
 
     # Run 100 times
-    for i in range(100):
+    for i in range(25):
         print("iteration: %d" % i)
         # Create 6 graphs
         # Complete = completeGraph(n)
         # Star = starGraph(n - 1)
         # Update it according to n
-        SW = smallWroldGraph(n, 50)
-        ER = erdosRenyiGraph(n, 0.05)
+        SW = smallWroldGraph(n,40)
+        ER = erdosRenyiGraph(n, 0.06)
         # Update it according to n
-        PA = barabasiAlbertGraph(n, 30)
+        PA = barabasiAlbertGraph(n, 25)
         L2 = preferentialAttachment_2ndOrder(n, 1, False)
         # graphs = [Complete, Star, SW, ER, PA, L2]
         graphs = [SW, ER, PA, L2]

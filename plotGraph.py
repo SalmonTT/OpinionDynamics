@@ -5,9 +5,9 @@ from pylab import rcParams
 from pyvis.network import Network
 
 def plotGraph(G):
-    plotGraphWithDegree(G)
+    # plotGraphWithDegree(G)
     # plotGraphWithNodeSizeDependOnNodeDegree(G)
-    # plotGraphWithNodeColorDependOnNodeDegree(G)
+    plotGraphWithNodeColorDependOnNodeDegree(G)
     # plotGraphCombined(G)
     # interactiveGraph(G)
     # interactiveGraphExtended(G)
