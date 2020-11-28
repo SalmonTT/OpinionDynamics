@@ -351,24 +351,24 @@ def addCertainFeature(G, num_of_stubborn, percen):
 
 
 def assignDifferentOpinions():
-    ba3 = smallWroldGraph(50, 8)
-    # ba3 = barabasiAlbertGraph(50, 5)
+    # ba3 = smallWroldGraph(50, 8)
+    ba3 = barabasiAlbertGraph(30, 5)
     degreeHistogram(ba3, 3)
     detailplotGraphWithDegree(ba3, 3)
     ba2 = ba3.copy()
     ba4 = ba3.copy()
     ba5 = ba3.copy()
     addCertainFeature(ba2, 0, 0.2)
-    detailplotGraphWithNodeColorDependOnNodeDegree(ba2, 3)
+    # detailplotGraphWithNodeColorDependOnNodeDegree(ba2, 3)
     getCurrentOpinionN(ba2, True)
     addCertainFeature(ba3, 0, 0.3)
-    detailplotGraphWithNodeColorDependOnNodeDegree(ba3, 3)
+    # detailplotGraphWithNodeColorDependOnNodeDegree(ba3, 3)
     getCurrentOpinionN(ba3, True)
     addCertainFeature(ba4, 0, 0.4)
-    detailplotGraphWithNodeColorDependOnNodeDegree(ba4, 3)
+    # detailplotGraphWithNodeColorDependOnNodeDegree(ba4, 3)
     getCurrentOpinionN(ba4, True)
     addCertainFeature(ba5, 0, 0.5)
-    detailplotGraphWithNodeColorDependOnNodeDegree(ba5, 3)
+    # detailplotGraphWithNodeColorDependOnNodeDegree(ba5, 3)
     getCurrentOpinionN(ba5, True)
     graphs = [ba2, ba3, ba4, ba5]
 
@@ -376,13 +376,13 @@ def assignDifferentOpinions():
     for i in range(4):
         graph = graphs[i]
         print("this is for graph ba%d--------------------------------------------------" %i )
-        for j in range(3):
+        for j in range(1):
             print("iteration %d "%j)
             gv = graph.copy()
             glpa = graph.copy()
             opin_lpa = dict()
             opin_v = dict()
-            for k in range(50):
+            for k in range(30):
                 opin_v[k] = []
                 opin_lpa[k] = []
             time, type, dis, opin_lpa = detailvoterNOpinionLPA(gv, 2, 10000, 500, opin_lpa, 3)
@@ -394,13 +394,13 @@ def assignDifferentOpinions():
 
             df_v = pd.DataFrame(opin_v)
             df_lpa = pd.DataFrame(opin_lpa)
-            filename_v = "%s_v_%s" %("sw"+str(i+3), str(j))
-            filename_lpa = "%s_lpa_%s" % ("sw"+str(i+3), str(j))
+            filename_v = "%s_v_%s.csv" %("ba"+str(i+3), str(j))
+            filename_lpa = "%s_lpa_%s.csv" % ("ba"+str(i+3), str(j))
             df_v.to_csv(filename_v, index=False, header=True)
             df_lpa.to_csv(filename_lpa, index=False, header=True)
 
 
-# assignDifferentOpinions()
+assignDifferentOpinions()
 
 def plotDegree(G):
     # plot network with nodes' color depend on nodes' degree.
