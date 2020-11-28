@@ -1,4 +1,4 @@
-# Network Analysis
+Network Analysis
 
 Prior to simulation of opinion dynamics models, we must first create a complex network in order to resemble the topology of real networks. Since the 1950's, random graphs, described as "large scale networks with no apparent design principles" (Albert & Barabasi, 2001) has been the most straightforward realization of a complex network. The earliest study of random graphs were conducted by Paul Erdos and Alfred Renyi (). According to the Erdos-Renyi (ER) model, a graph starts with N nodes, and connect every pair of nodes with probability *p*. This creates a graph with approximately $pN(N-1)/2$ edges distributed randomly. 
 
@@ -54,36 +54,26 @@ The Erdos-Renyi-Gilbert model is one of the earliest and most commonly referred 
 To simulate the the Erdos-Renyi-Gilbert (ER hereafter) model, we use the *fast_gnp_random_graph()* function from Networkx. The two parameters for the function are *n* (number of nodes) and *p* (probability of edge creation). In the following, we fix the number of nodes to 25 for better interpretability and alter *p* to obtain graphs with different sparsity. 
 
 $N = 25, p = 0.1$
-
->Nodes: 25. Edges: 30. Max_degree: 5
->The top 5 degree centrality are [1, 6, 0, 11, 16]
->The top ten closeness centrality are [6, 24, 13, 15, 23, 1, 0, 9, 11, 22]
->The top ten betweenness centrality are [24, 6, 0, 23, 1, 18, 15, 13, 10, 11]
->The top ten eigenvector centrality are [16, 11, 1, 6, 3, 14, 9, 13, 22, 7]
->Average clustering coefficient of the graph: 0.053
->Network density: 0.1
->Triadic closure: 0.08695652173913043 
+>| Edges | Max Degree | Mean Clustering Coef. | Density | Transitivity |
+>| ----- | ---------- | --------------------- | ------- | --------------- |
+>| 30    | 5          | 0.053                 | 0.100     | 0.087           |
 >
->Graph             |  Degree Distribution
+>Graph (Red = Higher degree)             |  Degree Distribution
 >:-------------------------:|:-------------------------:
 ><img src="../graphs/ER/graph_25_01.PNG" width="500"/> | <img src="../graphs/ER/degree_25_01.PNG" width="500" /> 
-
+>
+>From the graph can observe two main partitions and a low density due to the low value of $p$ that we have set. The clustering coefficient is quite low compared to real networks. A similar measure to clustering coefficient is transitivity, which can be interpreted as the overall probability for the network to have adjacent nodes interconnect, implying the existence of tightly connected communities (such as existence of triadic closure). In this model, the transitivity is also quite low. 
 
 $N = 25, p = 0.7$
-> Nodes: 25. Edges: 213. Max_degree: 21
-> The top 5 degree centrality are [19, 1, 4, 6, 7]
-> The top ten closeness centrality are [19, 1, 4, 6, 7, 13, 22, 24, 0, 8]
-> The top ten betweenness centrality are [19, 4, 24, 22, 7, 1, 0, 13, 6, 9]
-> The top ten eigenvector centrality are [19, 6, 13, 1, 7, 4, 22, 24, 16, 12]
-> Average clustering coefficient of the graph: 0.720
-> Network density: 0.71
-> Triadic closure: 0.7169811320754716
+
+>| Edges | Max Degree | Mean Clustering Coef. | Density | Transitivity |
+>| ----- | ---------- | --------------------- | ------- | --------------- |
+>| 213    | 21          | 0.720                 | 0.710     | 0.717         |
+>Graph (Red = Higher degree)             |  Degree Distribution
+>:-------------------------:|:-------------------------:
+><img src="../graphs/ER/graph_25_0.7.PNG" width="500" />  |  <img src="../graphs/ER/degree_25_07.PNG" width="500" />
 >
-> Graph             |  Degree Distribution
-> :-------------------------:|:-------------------------:
-> <img src="../graphs/ER/graph_25_0.7.PNG" width="500" />  |  <img src="../graphs/ER/degree_25_07.PNG" width="500" />
-
-
+>By increasing the probability $p$ to 0.7 we observe a significant increase in all metrics. This resulting graph is very dense and very well connected. This model would be suitable for smaller, tight-knit community, but not larger ones. It is difficult to imagine a social network with millions of nodes being this dense. 
 
 ## Small-World Model: Watts-Strogatz Model
 The Watts-Strogatz model can be thought as a "pseudo-dynamic" model. In the context of networks, dynamics refers to the birth and death of edges and nodes. "Pseudo-dynamic" models attempt to model a single, static snapshot of the network, as opposed to multiple snapshots recorded at different time steps. However, they contain dynamic processes such as modification and link addition. (https://arxiv.org/pdf/0912.5410.pdf#page=45&zoom=100,96,753) All three classes of complex network described in the report are "pseudo-dynamic" models. 
@@ -94,46 +84,37 @@ The Watts-Strogatz model first begins with a ring lattice with $N$ nodes and $k$
 To simulate the Watts-Strogatz model, we again utilize the function *watts_strogatz_graph()* from Networkx. This time there are three parameters: number of nodes ($N$), $k$ and the probability $p$. These parameters are the same as the ones described above. $N$ is first fixed to 25 and we vary both $k$ and $p$. 
 
 $N = 25, k = 5, p = 0.5$
-> Nodes: 25. Edges: 50. Max_degree: 7
-> The top 5 degree centrality are [2, 10, 24, 5, 7]
-> The top ten closeness centrality are [24, 2, 11, 1, 4, 5, 10, 13, 9, 7]
-> The top ten betweenness centrality are [24, 2, 10, 7, 9, 5, 13, 11, 1, 20]
-> The top ten eigenvector centrality are [2, 24, 5, 10, 4, 11, 9, 1, 7, 19]
-> Average clustering coefficient of the graph: 0.256
-> Network density: 0.16666666666666666
-> Triadic closure: 0.2
+>| Edges | Max Degree | Mean Clustering Coef. | Density | Transitivity |
+>| ----- | ---------- | --------------------- | ------- | --------------- |
+>| 50    | 7          | 0.256                 | 0.167     | 0.200          |
 >
-> Graph             |  Degree Distribution
-> :-------------------------:|:-------------------------:
-> <img src="../graphs/SW/graph_25_5_0.5.PNG" width="500" />  | <img src="../graphs/SW/degree_graph_25_5_0.5.jpg" width="500" /> 
+>Graph (Red = Higher degree)             |  Degree Distribution
+>:-------------------------:|:-------------------------:
+><img src="../graphs/SW/graph_25_5_0.5.PNG" width="500" />  | <img src="../graphs/SW/degree_graph_25_5_0.5.jpg" width="500" /> 
+>
+>Immediately we can observe that at this graph is better connected than the ER model with small $p$. This is validated as we examined the average shortest path length between the two models and found that on average, the average shortest path length of this SW model is shorter than the ER model with lower probability. We can also observe the existence of a KOL in this graph (shown by the red node). 
 
 $N = 25, k = 5, p = 1$
-> Nodes: 25. Edges: 50. Max_degree: 7
-> The top 5 degree centrality are [8, 12, 21, 24, 0]
-> The top ten closeness centrality are [12, 8, 21, 24, 11, 20, 10, 0, 2, 4]
-> The top ten betweenness centrality are [8, 12, 21, 24, 11, 0, 18, 19, 4, 20]
-> The top ten eigenvector centrality are [12, 8, 21, 24, 20, 3, 10, 11, 4, 15]
-> Average clustering coefficient of the graph: 0.104
-> Network density: 0.16666666666666666
-> Triadic closure: 0.10526315789473684
+>| Edges | Max Degree | Mean Clustering Coef. | Density | Transitivity |
+>| ----- | ---------- | --------------------- | ------- | --------------- |
+>| 50    | 7          | 0.104                 | 0.167     | 0.105         |
 >
-> Graph             |  Degree Distribution
-> :-------------------------:|:-------------------------:
-> <img src="../graphs/SW/graph_25_5_1.PNG" width="500" />  | <img src="../graphs/SW/degree_25_5_1.PNG" width="500" /> 
+>Graph (Red = Higher degree)             |  Degree Distribution
+>:-------------------------:|:-------------------------:
+><img src="../graphs/SW/graph_25_5_1.PNG" width="500" />  | <img src="../graphs/SW/degree_25_5_1.PNG" width="500" /> 
+>
+>As we increase the probability $p$ to 1, we actually observe a decrease across all metrics. 
 
 $N = 25, k = 8, p = 0.5$
-> Nodes: 25. Edges: 100. Max_degree: 10
-> The top 5 degree centrality are [2, 10, 15, 17, 20]
-> The top ten closeness centrality are [2, 10, 15, 20, 21, 0, 3, 4, 14, 16]
-> The top ten betweenness centrality are [17, 3, 21, 20, 2, 15, 10, 16, 14, 23]
-> The top ten eigenvector centrality are [10, 15, 21, 2, 17, 0, 20, 4, 16, 14]
-> Average clustering coefficient of the graph: 0.328
-> Network density: 0.3333333333333333
-> Triadic closure: 0.3188010899182561
+>| Edges | Max Degree | Mean Clustering Coef. | Density | Transitivity |
+>| ----- | ---------- | --------------------- | ------- | --------------- |
+>| 100    | 10          | 0.328                 | 0.333     | 0.319         |
 >
-> Graph             |  Degree Distribution
-> :-------------------------:|:-------------------------:
-> <img src="../graphs/SW/graph_25_8_0.5.PNG" width="500" />  | <img src="../graphs/SW/degree_25_8_0.5.PNG" width="500" /> 
+>Graph (Red = Higher degree)             |  Degree Distribution
+>:-------------------------:|:-------------------------:
+><img src="../graphs/SW/graph_25_8_0.5.PNG" width="500" />  | <img src="../graphs/SW/degree_25_8_0.5.PNG" width="500" /> 
+>
+>When we increase the $k$ value, the SW model resembles more like an ER model with high probability. Here we see higher density and clustering coefficient, and the degree distribution is also similar to that of the ER model with higher probability.
 
 
 ## Scale-free Model: Preferential Attachment Model
@@ -149,43 +130,46 @@ In order to simulate the preferential attachment (PA) model, we explored two met
 These two methods will be compared below:
 
 BA: $N = 25, m = 5$
->Nodes: 25. Edges: 61. Max_degree: 16
->The top 5 degree centrality are [2, 7, 15, 3, 1]
->The top ten closeness centrality are [2, 7, 15, 0, 3, 9, 1, 16, 11, 12]
->The top ten betweenness centrality are [2, 15, 7, 3, 12, 11, 9, 0, 1, 20]
->The top ten eigenvector centrality are [2, 7, 15, 1, 9, 16, 3, 18, 0, 12]
->Average clustering coefficient of the graph: 0.425
->Network density: 0.20333333333333334
->Triadic closure: 0.2969543147208122
+>| Edges | Max Degree | Mean Clustering Coef. | Density | Transitivity |
+>| ----- | ---------- | --------------------- | ------- | --------------- |
+>| 61    | 16          | 0.425                 | 0.203     | 0.297          |
 >
->Graph             |  Degree Distribution
+>Graph (Red = Higher degree)             |  Degree Distribution
 >:-------------------------:|:-------------------------:
 ><img src="../graphs/BA/graph_25_5.PNG" width="500" />  | <img src="../graphs/BA/degree_25_5.PNG" width="500" /> 
+>
+>Immediate from this graph we can observe the workings of the preferential attachment mechanism. At similar number of edges, the BA model has a much higher maximum degree than the previous models, which illustrates the "rich get richer" characteristics of preferential attachment mechanism. We also observe a high clustering coefficient, one that's significantly higher than its density. This again illustrates the property of scale-free network, and also that of real social networks: within large social networks, we observe the many dense but small cliques while the entire network is relatively sparse. 
 
 BA: $N = 25, m = 10$
-> Nodes: 25. Edges: 96. Max_degree: 16
-> The top 5 degree centrality are [5, 8, 12, 18, 0]
-> The top ten closeness centrality are [5, 8, 12, 18, 0, 20, 23, 1, 7, 9]
-> The top ten betweenness centrality are [5, 8, 9, 13, 12, 1, 2, 7, 0, 18]
-> The top ten eigenvector centrality are [5, 8, 18, 12, 20, 0, 16, 14, 7, 1]
-> Average clustering coefficient of the graph: 0.403
-> Network density: 0.32
-> Triadic closure: 0.4167709637046308
+>| Edges | Max Degree | Mean Clustering Coef. | Density | Transitivity |
+>| ----- | ---------- | --------------------- | ------- | --------------- |
+>| 96    | 16          | 0.403                 | 0.320     | 0.417          |
 >
-> Graph             |  Degree Distribution
-> :-------------------------:|:-------------------------:
-> <img src="../graphs/BA/graph_25_10.PNG" width="500" />  | <img src="../graphs/BA/degree_25_10.PNG" width="500" /> 
+>Graph (Red = Higher degree)             |  Degree Distribution
+>:-------------------------:|:-------------------------:
+><img src="../graphs/BA/graph_25_10.PNG" width="500" />  | <img src="../graphs/BA/degree_25_10.PNG" width="500" /> 
+>
+>Once we increase $m$ to 10, unsurprisingly we observe a higher density and transitivity. However, it is worth noting that the maximum degree does not change, while clustering coefficient has decreased. 
 
 PA: $N = 25$
-> Nodes: 25. Edges: 50. Max_degree: 9
-> The top 5 degree centrality are [0, 7, 1, 18, 21]
-> The top ten closeness centrality are [7, 0, 1, 10, 20, 18, 21, 2, 4, 5]
-> The top ten betweenness centrality are [7, 0, 18, 8, 1, 21, 5, 10, 4, 6]
-> The top ten eigenvector centrality are [0, 7, 1, 2, 4, 5, 12, 3, 18, 20]
-> Average clustering coefficient of the graph: 0.185
-> Network density: 0.16666666666666666
-> Triadic closure: 0.19597989949748743
+>| Edges | Max Degree | Mean Clustering Coef. | Density | Transitivity |
+>| ----- | ---------- | --------------------- | ------- | --------------- |
+>| 50    | 9          | 0.185                 | 0.167     | 0.196          |
 >
-> Graph             |  Degree Distribution
-> :-------------------------:|:-------------------------:
-> <img src="../graphs/PAV3/graph_25.PNG" width="500" />  | <img src="../graphs/PAV3/degree_25.PNG" width="500" /> 
+>Graph (Red = Higher degree)             |  Degree Distribution
+>:-------------------------:|:-------------------------:
+><img src="../graphs/PAV3/graph_25.PNG" width="500" />  | <img src="../graphs/PAV3/degree_25.PNG" width="500" /> 
+>
+>Our implementation of the preferential attachment network should statistically demonstrate the same properties as the BA model. However, it is worth noting a few differences in terms of their mechanisms. First, our PA model does not require the parameter &m$, the number of edges a new node forms is entirely governed by the preferential attachment mechanism, which is why all metrics are lower for our PA compared to the BA model. Nevertheless, the key property of the scale-free network can be shown across both BA and PA models: the power-law degree distribution. 
+
+#### Summary on the Simulation of Three classes of Network Models
+>| Model | Settings | Edges | Max Degree | Mean Clustering Coef. | Density | Transitivity |
+>| ----- | -------------------- | ----- | ---------- | --------------------- | ------- | --------------- |
+>| ER | N = 25, p = 0.1	| 30    | 5          | 0.053                 | 0.100     | 0.087           |
+>| ER | N = 25, p = 0.7	| 213    | 21          | 0.720                 | 0.710     | 0.717         |
+>| SW | N = 25, k = 5, p = 0.5 | 50    | 7          | 0.256                 | 0.167     | 0.200          |
+>| SW | N = 25, k = 5, p = 1.0	| 50    | 7          | 0.104                 | 0.167     | 0.105         |
+>| SW | N = 25, k = 8, p = 0.5	| 100    | 10          | 0.328                 | 0.333     | 0.319         |
+>| BA | N = 25, m = 5 | 61    | 16          | 0.425                 | 0.203     | 0.297          |
+>| BA | N = 25, m = 10	| 96    | 16          | 0.403                 | 0.320     | 0.417          |
+>| PA | N = 25	| 50    | 9          | 0.185                 | 0.167     | 0.196          |

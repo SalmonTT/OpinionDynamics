@@ -112,6 +112,8 @@ def fullAnalysis(G):
     triadic_closure = nx.transitivity(G)
     print("Triadic closure:", triadic_closure)
     communityANalysis(G)
+    shortestPath = nx.average_shortest_path_length(G)
+    print("Average shortest path length: ", shortestPath)
     return
 
 def csvAnalysis(filename):

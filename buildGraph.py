@@ -85,11 +85,11 @@ def preferentialAttachmentV3(max_nodes, loner=False):
 
 pa = preferentialAttachment_2ndOrder(80, c=0.5)
 
-sw = smallWroldGraph(25, 8)
+sw = smallWroldGraph(25, 5)
 ba = barabasiAlbertGraph(25, 10)
 er = erdosRenyiGraph(25, 0.1)
 pa = preferentialAttachmentV3(25)
 
 # Analysis
-fullAnalysis(pa)
-plotGraph(pa)
+fullAnalysis(sw)
+plotGraph(sw)
