@@ -55,3 +55,22 @@ for the above example, the token is:
 863640e36a586f508e0802160ab8b855cce45a8705b4fd2d
 ```
 And you are now running jupyter notebook!
+
+## Uploading files to server:
+on local command prompt enter the following:
+```bash
+scp path/to/local/file.ext user@remote-host:path/to/remote/file.ext
+```
+e.g.
+```bash
+C:\Users\Simon\Desktop\ftec4003\4003Task1\insurance-train.csv fy20fti@sepc623.se.cuhk.edu.hk:DataMining\insurance-train.csv
+```
+
+## Downloading files from server:
+```bash
+scp your_username@remotehost.edu:foobar.txt /local/dir
+```
+e.g.
+```bash
+scp fy20fti@sepc623.se.cuhk.edu.hk:DataMining\insurance-test.csv C:\Users\Simon\Desktop
+```
