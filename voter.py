@@ -2,13 +2,16 @@
 # voting models in random networks
 from PA import *
 from pyvis.network import Network
-from scipy.stats import poisson
+# from scipy.stats import poisson
 import numpy as np
 import math
 import collections
 import pandas as pd
 from buildGraph import *
 
+'''
+This file is the early stage of voter model, including binary & multiple opinions
+'''
 
 # Add attributes to nodes in G
 def addFeature(G, num):
@@ -304,7 +307,7 @@ def voterNOpinion(G, num_updates, process_time):
                 break
 
     sorted_schedule = collections.OrderedDict(sorted(schedule.items()))
-    # print(sorted_schedule)
+    print(sorted_schedule)
     stable_count = 0
     stable = {}
     max_stable = G.number_of_nodes()
@@ -399,7 +402,7 @@ def voterNOpiniontest(G, no_opin, num_updates, process_time):
     distribution = setDistribution(G, no_opin)
     return update_count, 2, distribution
 
-# n, m, l = voterNOpiniontest(preferentialAttachment_2ndOrder(10, 0.5), 2, 10, 1200)
+# n, m, l = voterNOpinion(preferentialAttachment_2ndOrder(10, 0.5), 2, 10, 1200)
 # print(n,m,l)
 
 

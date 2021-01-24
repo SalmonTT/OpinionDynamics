@@ -7,6 +7,15 @@ import pandas as pd
 import numpy as np
 import community as community_louvain
 
+'''
+This file is to analyse networks, including:
+    -   Basic information: max degrees, degree centrality, closeness centrality, betweenness centrality, eigenvector centrality
+    -   Degree histogram
+    -   Degree distribution
+    -   Clustering coefficient
+    -   Community analysis
+'''
+
 # G = some networkx graph
 
 def networkAnalysis(G):
@@ -102,6 +111,7 @@ def communityANalysis(G):
                                 node_color=str(count / size))
     nx.draw_networkx_edges(G, pos, alpha=0.5)
     plt.show()
+
 def fullAnalysis(G):
     basicInfo(G)
     degreeHistogram(G)

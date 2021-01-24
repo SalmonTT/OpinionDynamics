@@ -1,8 +1,17 @@
-from jn import *
+from majorSimulation import *
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from pylab import rcParams
 import networkx as nx
+from plotGraph import plotGraphWithNodeColorDependOnNodeDegree
+
+'''
+This file is used for Term 1 Final Report Detailed Simulation part, including
+    -   Plot degree histogram, degree distribution, different graphs of networks
+    -   Voter Model & LPA that could record the detail of opinion evolution (convergence time, type, distribution, ...)
+    -   Different initial percentage of agents holding opinion 1
+    -   Create a 7-node small community
+'''
 
 def degreeHistogram(G, no):
     degree_sequence = sorted([d for n, d in G.degree()], reverse=True)
@@ -17,7 +26,7 @@ def degreeHistogram(G, no):
     ax.set_xticklabels(deg)
     if no == 1:
         plt.savefig('sw_degreeHistogram.jpg')
-    elif no ==0:
+    elif no == 0:
         plt.savefig('ba_degreeHistogram.jpg')
     plt.show()
 
@@ -400,7 +409,7 @@ def assignDifferentOpinions():
             df_lpa.to_csv(filename_lpa, index=False, header=True)
 
 
-assignDifferentOpinions()
+# assignDifferentOpinions()
 
 def plotDegree(G):
     # plot network with nodes' color depend on nodes' degree.
@@ -442,26 +451,25 @@ def smallCommunity():
     G.nodes[2]['opinion'] = 3
     G.nodes[4]['opinion'] = 3
     G.nodes[6]['opinion'] = 2
-    for i in range(7):
+    for i in range(6):
         G.nodes[i]['stubborness'] = 0
+    plotGraphWithNodeColorDependOnNodeDegree(G)
     # plotDegree(G)
-    gv = G.copy()
-    glpa = G.copy()
-    opin_lpa = dict()
-    opin_v = dict()
-    for k in range(7):
-        opin_v[k] = []
-        opin_lpa[k] = []
-    time, type, dis, opin_lpa = detailvoterNOpinionLPA(gv, 3, 10000, 500, opin_lpa, 3)
-    time_v, type_v, dis_v, opin_v = detailvoterNOpinion(glpa, 3, 10000, 500, opin_v, 3)
-    print("For LPA, sw_time, sw_type, sw_dis are")
-    print(time, type, dis)
-    print("For voter, sw_time, sw_type, sw_dis are")
-    print(time_v, type_v, dis_v)
-
-    df_v = pd.DataFrame(opin_v)
-    df_lpa = pd.DataFrame(opin_lpa)
-    df_v.to_csv("voter.csv", index=False, header=True)
-    df_lpa.to_csv("lpa.csv", index=False, header=True)
-
-# smallCommunity()
+    # gv = G.copy()
+    # glpa = G.copy()
+    # opin_lpa = dict()
+    # opin_v = dict()
+    # for k in range(7):
+    #     opin_v[k] = []
+    #     opin_lpa[k] = []
+    # time, type, dis, opin_lpa = detailvoterNOpinionLPA(gv, 3, 10000, 500, opin_lpa, 3)
+    # time_v, type_v, dis_v, opin_v = detailvoterNOpinion(glpa, 3, 10000, 500, opin_v, 3)
+    # print("For LPA, sw_time, sw_type, sw_dis are")
+    # print(time, type, dis)
+    # print("For voter, sw_time, sw_type, sw_dis are")
+    # print(time_v, type_v, dis_v)
+    #
+    # df_v = pd.DataFrame(opin_v)
+    # df_lpa = pd.DataFrame(opin_lpa)
+    # df_v.to_csv("voter.csv", index=False, header=True)
+    # df_lpa.to_csv("lpa.csv", index=False, header=True)

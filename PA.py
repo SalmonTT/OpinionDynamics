@@ -4,6 +4,11 @@ import networkx as nx
 from plotGraph import *
 from networkAnalysis import networkAnalysis
 
+'''
+This file is for preferential attachment created in the first stage of project in Term 1
+'''
+
+
 def netwrokxBApreferentialAttachment(max_nodes, no_edges):
     G = nx.barabasi_albert_graph(max_nodes, no_edges)
     plotGraph(G)

@@ -2,6 +2,10 @@ import math
 import collections
 from PA import *
 
+'''
+This file is for random walk
+'''
+
 def initialize(G, num):
     stubborn_agents = random.sample(list(G), num)
     for node in G:

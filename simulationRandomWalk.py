@@ -5,6 +5,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from randomWalk import *
 
+'''
+Early version of Term 1 Final Report Major Simulation
+'''
+
 def simulateRW():
     # Set number of nodes and start building graph
     n = 100
