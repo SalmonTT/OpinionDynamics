@@ -5,6 +5,18 @@ from plotGraph import plotGraph
 from networkAnalysis import networkAnalysis, fullAnalysis
 from PA import randomSubset
 
+'''
+This file is for creating graphs of different topologies, including
+    -   Complete
+    -   Star
+    -   Small World
+    -   Erdos Renyi
+    -   Barabasi Albert
+    -   2nd Order Preferential Attachment
+    -   Our Own Preferential Attachment
+Used in Term 1 Final Report Simulation
+'''
+
 def completeGraph(no_node):
     return nx.complete_graph(no_node)
 
@@ -82,14 +94,3 @@ def preferentialAttachmentV3(max_nodes, loner=False):
             G.add_edge(rand_node, i)
 
     return G
-
-pa = preferentialAttachment_2ndOrder(80, c=0.5)
-
-sw = smallWroldGraph(25, 5)
-ba = barabasiAlbertGraph(25, 10)
-er = erdosRenyiGraph(25, 0.1)
-pa = preferentialAttachmentV3(25)
-
-# Analysis
-fullAnalysis(sw)
-plotGraph(sw)

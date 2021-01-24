@@ -4,6 +4,10 @@ import matplotlib as mpl
 from pylab import rcParams
 from pyvis.network import Network
 
+'''
+This file is for plot graph, both static ones with matplot and dynamic ones with pyvis
+'''
+
 def plotGraph(G):
     # plotGraphWithDegree(G)
     # plotGraphWithNodeSizeDependOnNodeDegree(G)

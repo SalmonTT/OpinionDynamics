@@ -5,6 +5,10 @@ from plotGraph import plotGraph
 import pandas as pd
 import matplotlib.pyplot as plt
 
+'''
+Early version of Term 1 Final Report Major Simulation
+'''
+
 def simulationNOpinionsLPA():
     # Set number of nodes and start building graph
     n = 10

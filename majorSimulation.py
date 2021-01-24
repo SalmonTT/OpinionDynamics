@@ -7,6 +7,12 @@ import collections
 import matplotlib.pyplot as plt
 from time import process_time
 
+'''
+This file is for Term 1 Final Report Major Simulation of Voter Model and LPA, including
+    -   Create graphs of different topologies
+    -   Repeat 100 times on the same graph for Voter Model and LPA
+'''
+
 # build graph
 def completeGraph(no_node):
     return nx.complete_graph(no_node)

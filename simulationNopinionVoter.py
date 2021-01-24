@@ -32,6 +32,10 @@ def simulationNOpinions():
 
 # simulationNOpinions()
 
+'''
+Early version of Term 1 Final Report Major Simulation
+'''
+
 def mulSimulationNOpinions():
     outcome = {'complete':[],
                'star':[],

@@ -5,6 +5,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from networkAnalysis import csvAnalysis
 
+'''
+Early version of Term 1 Final Report Major Simulation
+'''
+
 def simulation():
     # Set number of nodes and start building graph
     n = 100
