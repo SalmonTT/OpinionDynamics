@@ -11,9 +11,9 @@ This file is for plot graph, both static ones with matplot and dynamic ones with
 def plotGraph(G):
     # plotGraphWithDegree(G)
     # plotGraphWithNodeSizeDependOnNodeDegree(G)
-    plotGraphWithNodeColorDependOnNodeDegree(G)
+    # plotGraphWithNodeColorDependOnNodeDegree(G)
     # plotGraphCombined(G)
-    # interactiveGraph(G)
+    interactiveGraph(G)
     # interactiveGraphExtended(G)
 
 
