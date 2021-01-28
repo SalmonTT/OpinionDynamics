@@ -94,3 +94,10 @@ def preferentialAttachmentV3(max_nodes, loner=False):
             G.add_edge(rand_node, i)
 
     return G
+
+G = preferentialAttachment_2ndOrder(10)
+G.add_edge(0,1,weight = 10)
+adj = nx.convert_matrix.to_numpy_matrix(G)
+# adj = nx.convert_matrix.to_pandas_adjacency(G)
+# adj = nx.convert_matrix.to_pandas_edgelist(G)
+print(adj)
