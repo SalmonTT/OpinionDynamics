@@ -26,6 +26,12 @@ def interactiveDirectedGraph(G):
     nt.from_nx(G)
     nt.show("nx.html")
 
+def createAdjacencyMatrix(G):
+    adj = nx.convert_matrix.to_numpy_matrix(G)
+    # adj = nx.convert_matrix.to_pandas_adjacency(G)
+    # adj = nx.convert_matrix.to_pandas_edgelist(G)
+    return adj
+
 G = snapDataset()
 # print(sorted(G.in_degree, key=lambda x: x[1], reverse=True))
 # print(sorted(G.out_degree, key=lambda x: x[1], reverse=True))
